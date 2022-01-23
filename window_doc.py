@@ -42,7 +42,7 @@ class Actions:
 
         return True
 
-    def open_current_doc(cmd: str = None) -> None:
+    def open_current_doc(cmd: str = None):
         """Opens the current document in the default open handler, or passing it to {cmd}"""
 
         doc = actions.user.file_manager_current_path_or_doc()
@@ -54,7 +54,7 @@ class Actions:
         else:
             return actions.user.system_command_nb(f"open \"{doc}\"")
 
-    def reveal_current_doc() -> None:
+    def reveal_current_doc():
         """Reveals the current application's document in Finder"""
 
         doc = actions.user.file_manager_current_path_or_doc()
