@@ -1,1 +1,8 @@
 # talon_accessibility
+
+Experimental [Talon](https://talonvoice.com/) integrations using macOS accessibility APIs.
+
+## Features
+
+- **menu:** support for creating actions that directly run menu commands 
+- **window_close:** support for closing application windows (the current one, everything but the current one, or everything -- even for apps that are not focused!)
