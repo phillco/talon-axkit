@@ -36,7 +36,7 @@ class Actions:
             # NOTE(pcohen): closing can be slow; use cron as cheap multithreading
             cron.after("0s", lambda w=window: actions.user.close_window(w))
 
-    def close_windows(close_current: bool = True, close_others: bool = True, app_name: any = None):
+    def close_windows(close_current: bool = True, close_others: bool = True, app_name: str = None):
         """Closes windows for the given application name; if None, defaults to the current application
 
         `close_current`: whether to close the current window
