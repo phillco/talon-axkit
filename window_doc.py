@@ -1,11 +1,12 @@
-from urllib.parse import urlparse, unquote
-
-from talon import Context, Module, actions, ui, app
-
 import os
+import subprocess
+from talon import Context, Module, actions, ui, app
+from typing import Optional
+from urllib.parse import urlparse, unquote
 
 ctx = Context()
 mod = Module()
+
 
 @mod.action_class
 class Actions:
@@ -23,7 +24,7 @@ class Actions:
         # returns URL-encoded path sometimes
         window = ui.active_window()
         url = urlparse(window.element.AXDocument)
-        if url.scheme == 'file': # will there ever be other schemes?
+        if url.scheme == 'file':  # will there ever be other schemes?
             return unquote(url.path)
 
         # Fallback to doc
@@ -37,33 +38,30 @@ class Actions:
             return False
 
         if not os.path.exists(doc):
-            app.notify("Document doesn't exist", f"The current window's document doesn't seem to exist on disk:\n\n{doc}")
+            app.notify("Document doesn't exist",
+                       f"The current window's document doesn't seem to exist on disk:\n\n{doc}")
             return False
 
         return True
 
-    def open_current_doc(cmd: str = None):
+    def open_current_doc(cmd: str = None) -> Optional[subprocess.CompletedProcess]:
         """Opens the current document in the default open handler, or passing it to {cmd}"""
 
         doc = actions.user.file_manager_current_path_or_doc()
         if not actions.user.represented_file_is_valid(doc):
-            return
+            return None
 
-        if cmd:
-            return actions.user.system_command_nb(f"{cmd} \"{doc}\"")
-        else:
-            return actions.user.system_command_nb(f"open \"{doc}\"")
+        return subprocess.run([cmd if cmd else "open", doc])
 
-    def reveal_current_doc():
+    def reveal_current_doc() -> Optional[subprocess.CompletedProcess]:
         """Reveals the current application's document in Finder"""
 
         doc = actions.user.file_manager_current_path_or_doc()
         if not actions.user.represented_file_is_valid(doc):
-            return
+            return None
 
         if not doc:
             app.notify("No document to open", "The current application doesn't expose its document information")
-            return
+            return None
 
-        return actions.user.system_command_nb(f"open -R \"{doc}\"")
-
+        return subprocess.run(["open", "-R", doc])
