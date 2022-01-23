@@ -30,7 +30,8 @@ class Actions:
 
     def menu_select(menu_path: str) -> bool:
         """Selects the menu item at the specified |-delimited path, or returns False if it does not exist"""
-        menu_path = [item_title.replace(r'\\', '\\') for item_title in re.split(r'(?<=[^\\])\|', menu_path)]
+        menu_path = [item_title.replace(r'\\', '\\').replace(r'\|', '|')
+                     for item_title in re.split(r'(?<=[^\\])\|', menu_path)]
         menu_title = menu_path[0]
         try:
             menu_item = active_menubar().children.find_one(AXRole='AXMenuBarItem', AXTitle=menu_title)
