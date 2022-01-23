@@ -1,4 +1,4 @@
-from typing import Union
+from urllib.parse import urlparse, unquote
 
 from talon import Context, Module, actions, ui, app
 
@@ -16,8 +16,18 @@ class Actions:
         """
 
         path = actions.user.file_manager_current_path()
-        if not path:
-            return ui.active_window().doc.replace("%20", " ")
+        if path:
+            return path
+
+        # NOTE(pcohen): using AXDocument because active_window().doc
+        # returns URL-encoded path sometimes
+        window = ui.active_window()
+        url = urlparse(window.element.AXDocument)
+        if url.scheme == 'file': # will there ever be other schemes?
+            return unquote(url.path)
+
+        # Fallback to doc
+        return window.doc
 
     def represented_file_is_valid(doc: str) -> bool:
         """Returns whether the given document path is valid, showing alerts if not."""
