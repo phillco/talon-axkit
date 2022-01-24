@@ -12,6 +12,7 @@ default_ctx.matches = r"""
 os: mac
 """
 
+OPEN_CMD_PATH = "/usr/bin/open"
 
 @default_ctx.action_class("user")
 class user_actions:
@@ -56,7 +57,7 @@ class Actions:
         if not actions.user.represented_file_is_valid(doc):
             return None
 
-        return subprocess.run([cmd if cmd else "open", doc])
+        return subprocess.run([cmd if cmd else OPEN_CMD_PATH, doc])
 
     def reveal_current_doc() -> Optional[subprocess.CompletedProcess]:
         """Reveals the current application's document in Finder"""
@@ -69,4 +70,4 @@ class Actions:
             app.notify("No document to open", "The current application doesn't expose its document information")
             return None
 
-        return subprocess.run(["open", "-R", doc])
+        return subprocess.run([OPEN_CMD_PATH, "-R", doc])
