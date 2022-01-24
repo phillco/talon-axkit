@@ -16,7 +16,7 @@ OPEN_CMD_PATH = "/usr/bin/open"
 
 @default_ctx.action_class("user")
 class user_actions:
-    def file_manager_current_path() -> str:
+    def file_manager_current_path():
         """A generic fallback for that will use `window.doc` to provide the current path
         in applications that don't implement a more specific function."""
 
