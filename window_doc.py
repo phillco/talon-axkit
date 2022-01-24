@@ -1,6 +1,6 @@
 import os
 import subprocess
-from talon import Context, Module, actions, ui, app
+from talon import Context, Module, actions, ui, app, clip
 from typing import Optional
 from urllib.parse import urlparse, unquote
 
@@ -58,6 +58,16 @@ class Actions:
             return None
 
         return subprocess.run([cmd if cmd else OPEN_CMD_PATH, doc])
+
+    def copy_current_doc(cmd: str = None) -> bool:
+        """Copies the path of the current document to the clipboard; returns success"""
+
+        doc = actions.user.file_manager_current_path()
+        if not actions.user.represented_file_is_valid(doc):
+            return False
+
+        clip.set_text(doc)
+        return True
 
     def reveal_current_doc() -> Optional[subprocess.CompletedProcess]:
         """Reveals the current application's document in Finder"""
