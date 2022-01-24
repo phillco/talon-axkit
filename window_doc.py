@@ -59,7 +59,7 @@ class Actions:
 
         return subprocess.run([cmd if cmd else OPEN_CMD_PATH, doc])
 
-    def copy_current_doc(cmd: str = None) -> bool:
+    def copy_current_doc_path_path(cmd: str = None) -> bool:
         """Copies the path of the current document to the clipboard; returns success"""
 
         doc = actions.user.file_manager_current_path()
