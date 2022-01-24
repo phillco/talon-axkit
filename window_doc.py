@@ -22,9 +22,12 @@ class user_actions:
         # NOTE(pcohen): using AXDocument because active_window().doc
         # returns URL-encoded path sometimes: https://github.com/talonvoice/talon/issues/473
         window = ui.active_window()
-        url = urlparse(window.element.AXDocument)
-        if url.scheme == 'file':  # will there ever be other schemes?
-            return unquote(url.path)
+        try:
+            url = urlparse(window.element.AXDocument)
+            if url.scheme == 'file':  # will there ever be other schemes?
+                return unquote(url.path)
+        except AttributeError:
+            pass
 
         # Fallback to doc
         return window.doc
