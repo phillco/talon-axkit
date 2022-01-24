@@ -40,7 +40,7 @@ class Actions:
         """Returns whether the given document path is valid, showing alerts if not."""
 
         if not doc:
-            app.notify("No document to open", "The current window doesn't expose its document information")
+            app.notify("No document available", "The current window doesn't expose its document information")
             return False
 
         if not os.path.exists(doc):
