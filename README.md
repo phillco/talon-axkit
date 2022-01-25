@@ -16,6 +16,12 @@ Experimental [Talon](https://talonvoice.com/) integrations using macOS accessibi
 - **Accessibility dictation:** A provider for context-aware dictation that can work instantly in supported applications, instead of doing the cursor selection dance. We can also directly insert into the text field. 
 - **Accessibility _editing_:** Navigate and/or directly edit the current input field by referring to words (e.g. "select the quick brown fox"; "go before jumps", "replace dog with cat"). You can also select tokens by name in your editor ("select get list from csv" would select "get_list_from_csv").
 
+## Possibly coming soon
+
+(Depends on community interest)
+
+- **Autodictate:** Automatically switch to dictation mode when focusing a text area in any application, then automatically switch back to command mode when you deselect it.
+
 ## Installation
 
 Clone alongside knausj in your `.talon/user` folder:
