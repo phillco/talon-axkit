@@ -51,11 +51,17 @@ class Actions:
         return True
 
     def open_current_doc(cmd: str = None) -> Optional[subprocess.CompletedProcess]:
-        """Opens the current document in the default open handler, or passing it to {cmd}"""
+        """Opens the current document in the default open handler, or passing it to {cmd}.
+
+        If {cmd} is an application, it is launched with the document passed as a parameter.
+        """
 
         doc = actions.user.file_manager_current_path()
         if not actions.user.represented_file_is_valid(doc):
             return None
+
+        if cmd.endswith(".app"):
+            return subprocess.run([OPEN_CMD_PATH, "-a", cmd, doc])
 
         return subprocess.run([cmd if cmd else OPEN_CMD_PATH, doc])
 
