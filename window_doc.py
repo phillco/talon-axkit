@@ -61,7 +61,7 @@ class Actions:
             return None
 
         if cmd.endswith(".app"):
-            return subprocess.run([OPEN_CMD_PATH, "-a", cmd, "--args", doc])
+            return subprocess.run([OPEN_CMD_PATH, "-a", cmd, doc])
 
         return subprocess.run([cmd if cmd else OPEN_CMD_PATH, doc])
 
