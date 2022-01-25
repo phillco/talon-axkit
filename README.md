@@ -13,16 +13,23 @@ Experimental [Talon](https://talonvoice.com/) integrations using macOS accessibi
 - **Slack and Discord channel navigation:** Switch directly to channels with a single voice command; a list of channels in the grammar increases accuracy.
 - **Window navigation using lists:** Switch between windows of the current application, or a non-focused application, by specifying a subset of the window title (a list grammar increases accuracy). Handy for switching between projects in your editor, for example.
 - **Accessibility dictation:** A provider for context-aware dictation that can work instantly in supported applications, instead of doing the cursor selection dance. We can also directly insert into the text field. 
-- **Accessibility _editing_:** Navigate and/or directly edit the current input field by referring to words (e.g. "select the quick brown fox"; "go before jumps", "replace dog with cat"). You can also select tokens by name in your editor ("select take list from csv" would select "get_list_from_csv").
+- **Accessibility _editing_:** Navigate and/or directly edit the current input field by referring to words (e.g. "select the quick brown fox"; "go before jumps", "replace dog with cat"). You can also select tokens by name in your editor ("select get list from csv" would select "get_list_from_csv").
 
 ## Installation
 
-Clone alongside knausj. It doesn't have to be a recent version.
+Clone alongside knausj in your `.talon/user` folder:
+
+```
+$ cd ~/.talon/user/
+$ git clone https://github.com/phillco/talon_accessibility.git
+```
+
+This repo requires a [knausj](https://github.com/knausj85/knausj_talon) checkout in your user/ folder, but it doesn't need to be super recent -- anything after April 2021 should work.
 
 ## Help wanted
 
-We would love a couple of beta testers and/or code reviewers. Reach out in #talon-mac if you are interested.
+We would love a couple of beta testers and/or code reviewers. Reach out in #talon-mac if you are interested!
 
 ## Why a separate repo?
 
-The goal is for most of this to be upstreamed eventually, but a small repository allows us to experiment and iterate more quickly in the short term without having to synchronize knausj versions (this allows us to ship without waiting for Phil to merge his fork of knausj from April 2021. :D).
+The goal is for most of this to be upstreamed eventually, but a small repository allows us to experiment and iterate more quickly in the short term without having to synchronize knausj versions (this allows us to ship without waiting for Phil to merge his fork of knausj from early 2021. :D).
