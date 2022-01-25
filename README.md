@@ -4,8 +4,8 @@ Experimental [Talon](https://talonvoice.com/) integrations using macOS accessibi
 
 ## Features
 
-- **Menu actions:** You can easily generate actions to directly run menu commands. "talon copy menu select" will generate the Talonscript to run the menu item underneath the cursor. You can then add that to your talon files to run that menu item directly in response to a command. 
-- **Closing windows:** Several flexible commands for closing windows (the current one, everything but the current one, or everything -- for the current app, or even for apps that are not focused!)
+- **Menu actions:** You can easily generate actions to directly run any item in an application's menu (the one in the menubar), as if you had clicked on it. "talon copy menu select" will generate the Talonscript to run the menu item underneath the cursor. You can then add that to your talon files to run that menu item directly in response to a command. 
+- **Closing windows:** Several flexible commands for closing windows (the current one, everything but the current one, or everything -- for the current app, or even for apps that are not focused.)
 - **Window documents:** Commands for manipulating the "document" of the current window. In macOS, this is typically the file being edited (for an editor), or the directory you're viewing (for Finder, or your terminal). You can reveal its location in Finder ("document reveal"), copy its path to the clipboard ("document copy path"), and open it either in the default application ("document open"), or a specific application "document open in Sublime".
 
 ## Coming soon
