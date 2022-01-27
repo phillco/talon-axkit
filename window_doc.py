@@ -60,7 +60,7 @@ class Actions:
         if not actions.user.represented_file_is_valid(doc):
             return None
 
-        if cmd.endswith(".app"):
+        if cmd and cmd.endswith(".app"):
             return subprocess.run([OPEN_CMD_PATH, "-a", cmd, doc])
 
         return subprocess.run([cmd if cmd else OPEN_CMD_PATH, doc])
