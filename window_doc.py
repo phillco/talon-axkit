@@ -52,18 +52,32 @@ class Actions:
 
     def open_current_doc(cmd: str = None) -> Optional[subprocess.CompletedProcess]:
         """Opens the current document in the default open handler, or passing it to {cmd}.
-
-        If {cmd} is an application, it is launched with the document passed as a parameter.
         """
 
         doc = actions.user.file_manager_current_path()
         if not actions.user.represented_file_is_valid(doc):
             return None
 
-        if cmd and cmd.endswith(".app"):
-            return subprocess.run([OPEN_CMD_PATH, "-a", cmd, doc])
-
         return subprocess.run([cmd if cmd else OPEN_CMD_PATH, doc])
+
+    def open_current_doc_in_app(app_or_path: str = None) -> Optional[subprocess.CompletedProcess]:
+        """Opens the current document in the given application, which could be a path or name of a running application.
+        """
+
+        doc = actions.user.file_manager_current_path()
+        if not actions.user.represented_file_is_valid(doc):
+            return None
+
+        if app_or_path.endswith(".app") and os.path.exists(app_or_path):
+            path = app_or_path
+        else:
+            application = actions.user.get_running_app(app_or_path)
+            if not application:
+                app.notify("Couldn't find application", f"Couldn't find a running app named {application}")
+                return
+            path = application.path
+
+        return subprocess.run([OPEN_CMD_PATH, "-a", path, doc])
 
     def copy_current_doc_path(cmd: str = None) -> bool:
         """Copies the path of the current document to the clipboard; returns success"""
