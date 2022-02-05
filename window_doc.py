@@ -1,8 +1,8 @@
 import os
 import subprocess
-from talon import Context, Module, actions, ui, app, clip
 from typing import Optional
-from urllib.parse import urlparse, unquote
+
+from talon import Context, Module, actions, app, clip
 
 ctx = Context()
 mod = Module()
@@ -13,26 +13,6 @@ os: mac
 """
 
 OPEN_CMD_PATH = "/usr/bin/open"
-
-@default_ctx.action_class("user")
-class user_actions:
-    def file_manager_current_path():
-        """A generic fallback for that will use `window.doc` to provide the current path
-        in applications that don't implement a more specific function."""
-
-        # NOTE(pcohen): using AXDocument because active_window().doc
-        # returns URL-encoded path sometimes: https://github.com/talonvoice/talon/issues/473
-        window = ui.active_window()
-        try:
-            url = urlparse(window.element.AXDocument)
-            if url.scheme == 'file':  # will there ever be other schemes?
-                return unquote(url.path)
-        except AttributeError:
-            pass
-
-        # Fallback to doc
-        return window.doc
-
 
 @mod.action_class
 class Actions:
