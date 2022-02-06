@@ -48,6 +48,7 @@ class user_actions:
             return
 
         if os.path.isfile(path):
+            # If the application gave a file, open the terminal in its parent directory.
             path = os.path.abspath(os.path.join(path, os.pardir))
 
         if not os.path.exists(path):
