@@ -20,7 +20,7 @@ setting_terminal = mod.setting(
 
 @ctx.action_class("user")
 class user_actions:
-    """Default macOS implementations for file managers"""
+    """Default macOS implementations for user actions"""
 
     def file_manager_current_path():
         """A generic fallback for that will use `window.doc` to provide the current path
@@ -61,3 +61,18 @@ class user_actions:
                 open "{escaped_path}"
             end tell
         """)
+
+@ctx.action_class("edit")
+class Actions:
+    """Default macOS implementations for edit actions"""
+
+    def selected_text() -> str:
+        try:
+            return ui.focused_element().AXSelectedText
+        except Exception:
+            try:
+                # TODO(pcohen): extract this focused_element() -> AXFocusedUIElement fall back
+                # if we will need it more often.
+                return ui.active_app().element.AXFocusedUIElement.AXSelectedText
+            except Exception:
+                return actions.next()
