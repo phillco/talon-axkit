@@ -72,6 +72,9 @@ class Actions:
             return ui.focused_element().AXSelectedText
         except Exception:
             try:
+                # ui.focused_element() sometimes returns NoElement.
+                # https://github.com/talonvoice/talon/issues/480
+                #
                 # TODO(pcohen): extract this focused_element() -> AXFocusedUIElement fallback
                 # if we expect to need it in the future.
                 return ui.active_app().element.AXFocusedUIElement.AXSelectedText
