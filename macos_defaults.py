@@ -71,8 +71,8 @@ class Actions:
             return ui.focused_element().AXSelectedText
         except Exception:
             try:
-                # TODO(pcohen): extract this focused_element() -> AXFocusedUIElement fall back
-                # if we will need it more often.
+                # TODO(pcohen): extract this focused_element() -> AXFocusedUIElement fallback
+                # if we expect to need it in the future.
                 return ui.active_app().element.AXFocusedUIElement.AXSelectedText
             except Exception:
                 return actions.next()
