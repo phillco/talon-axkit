@@ -159,7 +159,6 @@ class NotificationMonitor(object):
 			self.notifications += adding
 
 		notifications = {}
-		ncui = ui.apps(pid=self.pid)[0]
 		for identifier, group in self.notification_groups():
 			y = group.AXPosition.y
 
