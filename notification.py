@@ -233,11 +233,12 @@ class NotificationMonitor(object):
 		words_to_exclude = [word.split(" ")[0] for word in apostrophe_words]
 		notification_actions = actions.user.create_spoken_forms_from_list(
 			notification_actions, words_to_exclude=words_to_exclude)
-		notification_actions = {
-			spoken_form.replace(mangled_word, word): action
-			for mangled_word, word in apostrophe_words.items()
-			for spoken_form, action in notification_actions.items()
-			if 'apostrophe' not in spoken_form}
+		if apostrophe_words:
+			notification_actions = {
+				spoken_form.replace(mangled_word, word): action
+				for mangled_word, word in apostrophe_words.items()
+				for spoken_form, action in notification_actions.items()
+				if 'apostrophe' not in spoken_form}
 		print('actions', notification_actions)
 
 		if 'close' not in notification_actions and 'clear all' in notification_actions:
