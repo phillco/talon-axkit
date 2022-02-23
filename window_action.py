@@ -1,5 +1,8 @@
-from talon import Context, Module, actions, ui, cron
-from talon.mac.ui import App, Window
+from talon import Context, Module, actions, app, ui, cron
+if app.platform == 'mac':
+    from talon.mac.ui import App, Window
+else:
+    App = Window = None
 
 ctx = Context()
 mod = Module()
