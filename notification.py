@@ -215,7 +215,7 @@ class NotificationMonitor(object):
 				notifications[y] = Notification.from_group(group, identifier)
 
 		self.notifications = list(notifications.values())
-		print(notifications)
+		if notifications: print(notifications)
 
 		notification_actions = set()
 		notification_apps = set()
@@ -239,7 +239,7 @@ class NotificationMonitor(object):
 				for mangled_word, word in apostrophe_words.items()
 				for spoken_form, action in notification_actions.items()
 				if 'apostrophe' not in spoken_form}
-		print('actions', notification_actions)
+		if notification_actions: print('actions', notification_actions)
 
 		if 'close' not in notification_actions and 'clear all' in notification_actions:
 			# allow closing a notification stack like an individual notification
@@ -249,7 +249,7 @@ class NotificationMonitor(object):
 		# XXX use app name overrides from knausj?
 		notification_apps = actions.user.create_spoken_forms_from_list(notification_apps)
 		ctx.lists['user.notification_apps'] = notification_apps
-		print('apps', notification_apps)
+		if notification_apps: print('apps', notification_apps)
 
 		# XXX lists fail randomly, not sure why
 
