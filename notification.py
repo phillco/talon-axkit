@@ -38,6 +38,9 @@ class Actions:
 		"""Update notification list to reflect what is currently onscreen"""
 		# (poll? not try to keep up? not sure what else to do)
 
+	def notification_center():
+		"""Display or hide Notification Center"""
+
 @dataclass(frozen=True)
 class Notification:
 	identifier: int
@@ -116,6 +119,13 @@ class UserActions:
 
 	def notifications_update():
 		MONITOR.update_notifications()
+
+	def notification_center():
+		cc = ui.apps(bundle='com.apple.controlcenter')[0]
+		(cc.element.children.find_one(AXRole='AXMenuBar', max_depth=0)
+				   .children.find_one(AXRole='AXMenuBarItem', AXSubrole='AXMenuExtra',
+				   					  AXIdentifier='com.apple.menuextra.clock', max_depth=0)
+		).perform('AXPress')
 
 class NotificationMonitor(object):
 	__slots__ = (

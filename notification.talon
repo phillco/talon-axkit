@@ -14,3 +14,7 @@ os: mac
 
 ^(note | notification) update$:
 	user.notifications_update()
+
+^(note | notification) center$:
+	user.notification_center()
+	user.notifications_update()
