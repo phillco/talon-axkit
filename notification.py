@@ -158,7 +158,7 @@ class NotificationMonitor(object):
 		notification = None
 		if index is not None:
 			if index < 0 or index > len(self.notifications) - 1:
-				app.notify(f'Unable to locate notification #{index}', 'Try again?')
+				app.notify(f'Unable to locate notification #{index + 1}', 'Try again?')
 				return False
 
 			notification = self.notifications[index]
