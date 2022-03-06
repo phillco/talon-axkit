@@ -14,7 +14,3 @@ os: mac
 
 ^(note | notification) update$:
 	user.notifications_update()
-
-# debugging
-^(note | notification) lists$:
-	user.notifications_lists()

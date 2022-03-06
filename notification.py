@@ -38,9 +38,6 @@ class Actions:
 		"""Update notification list to reflect what is currently onscreen"""
 		# (poll? not try to keep up? not sure what else to do)
 
-	def notifications_lists():
-		"""XXX debugging - remove"""
-
 @dataclass(frozen=True)
 class Notification:
 	identifier: int
@@ -119,12 +116,6 @@ class UserActions:
 
 	def notifications_update():
 		MONITOR.update_notifications()
-
-	def notifications_lists():
-		print(ctx.lists)
-		from talon import registry
-		print(registry.lists['user.notification_actions'])
-		print(registry.lists['user.notification_apps'])
 
 class NotificationMonitor(object):
 	__slots__ = (
@@ -250,8 +241,6 @@ class NotificationMonitor(object):
 		notification_apps = actions.user.create_spoken_forms_from_list(notification_apps)
 		ctx.lists['user.notification_apps'] = notification_apps
 		if notification_apps: print('apps', notification_apps)
-
-		# XXX lists fail randomly, not sure why
 
 	def win_close(self, window):
 		if not window.app.pid == self.pid:
