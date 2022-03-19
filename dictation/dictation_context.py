@@ -65,7 +65,7 @@ class ModActions:
             # No accessibility support.
             return None
 
-        context = AccessibilityContext(content=el.get("AXValue"), selection=el.AXSelectedTextRange)
+        context = AccessibilityContext(content=el.get("AXValue"), selection=el.get("AXSelectedTextRange"))
 
         # Support application-specific overrides:
         context = actions.user.accessibility_adjust_context_for_application(el, context)
