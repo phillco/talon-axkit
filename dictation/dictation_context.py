@@ -41,22 +41,24 @@ class AccessibilityContext:
 @mod.action_class
 class ModActions:
 
-    def should_use_accessibility_dictation():
-        """Returns whether the"""
+    def accessibility_dictation_enabled():
+        """Just exports `setting_accessibility_dictation` for use in other files"""
         return setting_accessibility_dictation.get()
 
     def accessibility_adjust_context_for_application(el: Element,
                                                      context: AccessibilityContext) -> AccessibilityContext:
         """Sometimes the accessibility context reported by the application is wrong, but fixable
-        in predictable ways (this is most common in electron apps).
+        in predictable ways (this is most common in Electron apps).
         
         This method can be overwritten in those applications to do so.
         """
         return context
 
-    def accessibility_create_context(el: Element) -> Optional[AccessibilityContext]:
-        """Peeks the context in the given direction"""
-        if not actions.user.should_use_accessibility_dictation():
+    def accessibility_create_dictation_context(el: Element) -> Optional[AccessibilityContext]:
+        """Creates a `AccessibilityContext` representing the state of the input buffer
+        for dictation mode
+        """
+        if not actions.user.accessibility_dictation_enabled():
             return None
 
         if not el or not el.attrs:
@@ -76,14 +78,14 @@ class Actions:
     """Wires this in to the knausj dictation formatter"""
 
     def dictation_peek_left(clobber=False):
-        context = actions.user.accessibility_create_context(ui.focused_element())
+        context = actions.user.accessibility_create_dictation_context(ui.focused_element())
         if context is None:
             return actions.next()
 
         return context.left_context()
 
     def dictation_peek_right():
-        context = actions.user.accessibility_create_context(ui.focused_element())
+        context = actions.user.accessibility_create_dictation_context(ui.focused_element())
         if context is None:
             return actions.next()
 
