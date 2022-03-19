@@ -65,7 +65,11 @@ class ModActions:
             # No accessibility support.
             return None
 
-        context = AccessibilityContext(content=el.get("AXValue"), selection=el.get("AXSelectedTextRange"))
+        # NOTE(pcohen): In Microsoft apps (Word, OneNote). 
+        selection = el.get("AXSelectedTextRange")
+        if selection is None:
+            selection = Span(0, 0)
+        context = AccessibilityContext(content=el.get("AXValue"), selection=selection)
 
         # Support application-specific overrides:
         context = actions.user.accessibility_adjust_context_for_application(el, context)
