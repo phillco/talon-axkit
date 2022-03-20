@@ -78,7 +78,9 @@ class ModActions:
             # No accessibility support.
             return None
 
-        # NOTE(pcohen): In Microsoft apps (Word, OneNote). 
+        # NOTE(pcohen): In Microsoft apps (Word, OneNote), selection will be none when the cursor
+        # is that the start of the input buffer.
+        # TODO(pcohen): this should probably be an override
         selection = el.get("AXSelectedTextRange")
         if selection is None:
             selection = Span(0, 0)
@@ -94,6 +96,12 @@ class ModActions:
         return context
 
 
+# TODO(pcohen): relocate this
+class Colors:
+    RESET = '\033[0m'
+    RED = '\033[31m'
+    YELLOW = '\033[33m'
+
 @ctx.action_class("self")
 class Actions:
     """Wires this in to the knausj dictation formatter"""
@@ -103,11 +111,12 @@ class Actions:
             el = actions.user.dictation_current_element()
             context = actions.user.accessibility_create_dictation_context(el)
             if context is None:
+                print(f"{Colors.YELLOW}Accessibility not available for context-aware dictation{Colors.RESET}; falling back to cursor method")
                 return actions.next()
     
             return context.left_context()
         except Exception as e:
-            print(f"Error during accessibility dictation peeking: |{e}|")
+            print(f"{Colors.RED}Error while querying accessibility for context-aware dictation:{Colors.RESET} |{e}|")
             traceback.print_exc()
             
             # Fallback to the original (keystrokes) knausj method.
@@ -118,11 +127,13 @@ class Actions:
             el = actions.user.dictation_current_element()
             context = actions.user.accessibility_create_dictation_context(el)
             if context is None:
+                print(
+                    f"{Colors.YELLOW}Accessibility not available for context-aware dictation{Colors.RESET}; falling back to cursor method")
                 return actions.next()
-    
+
             return context.right_context()
         except Exception as e:
-            print(f"Error during accessibility dictation peeking: |{e}|")
+            print(f"{Colors.RED}Error while querying accessibility for context-aware dictation:{Colors.RESET} |{e}|")
             traceback.print_exc()
 
             # Fallback to the original (keystrokes) knausj method.
