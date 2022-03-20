@@ -84,6 +84,7 @@ class ModActions:
         selection = el.get("AXSelectedTextRange")
         if selection is None:
             selection = Span(0, 0)
+            
         context = AccessibilityContext(content=el.get("AXValue"), selection=selection)
 
         # Support application-specific overrides:
@@ -116,7 +117,7 @@ class Actions:
     
             return context.left_context()
         except Exception as e:
-            print(f"{Colors.RED}Error while querying accessibility for context-aware dictation:{Colors.RESET} |{e}|")
+            print(f"{Colors.RED}{type(e).__name__} while querying accessibility for context-aware dictation:{Colors.RESET} '{e}':")
             traceback.print_exc()
             
             # Fallback to the original (keystrokes) knausj method.
@@ -133,7 +134,7 @@ class Actions:
 
             return context.right_context()
         except Exception as e:
-            print(f"{Colors.RED}Error while querying accessibility for context-aware dictation:{Colors.RESET} |{e}|")
+            print(f"{Colors.RED}{type(e).__name__} while querying accessibility for context-aware dictation:{Colors.RESET} '{e}':")
             traceback.print_exc()
 
             # Fallback to the original (keystrokes) knausj method.
