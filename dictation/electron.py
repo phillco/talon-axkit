@@ -1,6 +1,6 @@
 from typing import Optional
 
-from talon import Context, ui, Module
+from talon import Context, ui, Module, actions
 from talon.mac.ui import App
 from talon.ui import UIErr
 
@@ -8,6 +8,12 @@ ctx = Context()
 ctx.matches = "os: mac"
 
 mod = Module()
+setting_accessibility_dictation = mod.setting(
+    "electron_accessibility",
+    type=bool,
+    default=False,
+    desc="Tells Electron apps to enable their accessibility trees, so that you can use accessibility dictation with them. Note that this could cause worse performance, depending on the app.",
+)
 
 @mod.action_class
 class ModActions:
@@ -19,6 +25,12 @@ class ModActions:
         try:
             app.element.AXManualAccessibility = True
         except UIErr as e:
-            # It's expected to get "Error setting element attribute", 
+            # this will raise "Error setting element attribute" even on success.
             pass
 
+
+def app_activate(app):
+    if setting_accessibility_dictation.get():
+        actions.user.enable_electron_accessibility(app)
+
+ui.register("app_activate", app_activate)
