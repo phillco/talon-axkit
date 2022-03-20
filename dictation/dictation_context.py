@@ -45,6 +45,15 @@ class ModActions:
     def accessibility_dictation_enabled():
         """Just exports `setting_accessibility_dictation` for use in other files"""
         return setting_accessibility_dictation.get()
+    
+    def dictation_current_element() -> Element:
+        """Returns the accessibility element that should be use for dictation (i.e.
+        the current input textbox).
+        
+        This is always always the focused (current) element, however, this function
+        exists so that context can overwrite it, for applications with strange behavior.
+        """
+        return ui.focused_element()
 
     def accessibility_adjust_context_for_application(el: Element,
                                                      context: AccessibilityContext) -> AccessibilityContext:
@@ -52,6 +61,9 @@ class ModActions:
         in predictable ways (this is most common in Electron apps).
         
         This method can be overwritten in those applications to do so.
+        
+        TODO(pcohen): it's a it strange to have both this and dictation_current_element;
+        possibly refactor.
         """
         return context
 
@@ -88,7 +100,8 @@ class Actions:
 
     def dictation_peek_left(clobber=False):
         try:
-            context = actions.user.accessibility_create_dictation_context(ui.focused_element())
+            el = actions.user.dictation_current_element()
+            context = actions.user.accessibility_create_dictation_context(el)
             if context is None:
                 return actions.next()
     
@@ -102,7 +115,8 @@ class Actions:
 
     def dictation_peek_right():
         try:
-            context = actions.user.accessibility_create_dictation_context(ui.focused_element())
+            el = actions.user.dictation_current_element()
+            context = actions.user.accessibility_create_dictation_context(el)
             if context is None:
                 return actions.next()
     
