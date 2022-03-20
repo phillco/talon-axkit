@@ -8,7 +8,7 @@ ctx = Context()
 ctx.matches = "os: mac"
 
 mod = Module()
-setting_accessibility_dictation = mod.setting(
+setting_electron_accessibility = mod.setting(
     "electron_accessibility",
     type=bool,
     default=False,
@@ -30,7 +30,7 @@ class ModActions:
 
 
 def app_activate(app):
-    if setting_accessibility_dictation.get():
+    if setting_electron_accessibility.get():
         actions.user.enable_electron_accessibility(app)
 
 ui.register("app_activate", app_activate)
