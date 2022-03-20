@@ -80,7 +80,7 @@ class ModActions:
 
         # NOTE(pcohen): In Microsoft apps (Word, OneNote), selection will be none when the cursor
         # is that the start of the input buffer.
-        # TODO(pcohen): this should probably be an override
+        # TODO(pcohen): this should probably be an app-specific `accessibility_adjust_context_for_application`
         selection = el.get("AXSelectedTextRange")
         if selection is None:
             selection = Span(0, 0)
