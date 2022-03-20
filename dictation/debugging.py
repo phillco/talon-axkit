@@ -43,13 +43,12 @@ class Actions:
 
             console.rule(f"{str(el)}'s attributes:")
 
-            # Attempt to sort the keys
-            d = {}
+            # Attempt to sort the keys by relying on insertion order.
+            attributed = {}
             for k in sorted(el.attrs):
-                d[k] = el.get(k)
+                attributed[k] = el.get(k)
 
-            console.print(d, markup=False)
-            console.rule("Accessibility contents:")
+            console.print(attributed, markup=False)
         except Exception as e:
             print(f"Exception while debugging accessibility: \"{e}\":")
             traceback.print_exc()
