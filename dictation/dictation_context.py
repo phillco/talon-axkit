@@ -1,3 +1,4 @@
+import traceback
 from dataclasses import dataclass
 from typing import Optional
 
@@ -86,15 +87,29 @@ class Actions:
     """Wires this in to the knausj dictation formatter"""
 
     def dictation_peek_left(clobber=False):
-        context = actions.user.accessibility_create_dictation_context(ui.focused_element())
-        if context is None:
-            return actions.next()
-
-        return context.left_context()
+        try:
+            context = actions.user.accessibility_create_dictation_context(ui.focused_element())
+            if context is None:
+                return actions.next()
+    
+            return context.left_context()
+        except Exception as e:
+            print(f"Error during accessibility dictation peeking: |{e}|")
+            traceback.print_exc()
+            
+            # Fallback to the original (keystrokes) knausj method.
+            actions.next()
 
     def dictation_peek_right():
-        context = actions.user.accessibility_create_dictation_context(ui.focused_element())
-        if context is None:
-            return actions.next()
+        try:
+            context = actions.user.accessibility_create_dictation_context(ui.focused_element())
+            if context is None:
+                return actions.next()
+    
+            return context.right_context()
+        except Exception as e:
+            print(f"Error during accessibility dictation peeking: |{e}|")
+            traceback.print_exc()
 
-        return context.right_context()
+            # Fallback to the original (keystrokes) knausj method.
+            actions.next()
