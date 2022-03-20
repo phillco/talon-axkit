@@ -74,6 +74,10 @@ class ModActions:
         # Support application-specific overrides:
         context = actions.user.accessibility_adjust_context_for_application(el, context)
 
+        # If we don't appear to have any accessibility information, don't use it.
+        if context.content is None or context.selection is None:
+            return None
+
         return context
 
 
