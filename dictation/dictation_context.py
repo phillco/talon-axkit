@@ -48,8 +48,7 @@ class ModActions:
         return setting_accessibility_dictation.get()
     
     def dictation_current_element() -> Element:
-        """Returns the accessibility element that should be used for dictation (i.e.
-        the current input textbox).
+        """Returns the accessibility element that should be used for dictation (i.e. the current input textbox).
         
         This is almost always the focused (current) element, however, this action
         exists so that context can overwrite it, for applications with strange behavior.
@@ -58,10 +57,9 @@ class ModActions:
 
     def accessibility_adjust_context_for_application(el: Element,
                                                      context: AccessibilityContext) -> AccessibilityContext:
-        """Sometimes the accessibility context reported by the application is wrong, but fixable
-        in predictable ways (this is most common in Electron apps).
+        """Hook for applications to override the reported buffer contents/cursor location.
         
-        This method can be overwritten in those applications to do so.
+        Sometimes the accessibility context reported by the application is wrong, but fixable in predictable ways (this is most common in Electron apps). This method can be overwritten in those applications to do so.
         
         TODO(pcohen): it's a it strange to have both this and dictation_current_element;
         possibly refactor.
@@ -69,8 +67,7 @@ class ModActions:
         return context
 
     def accessibility_create_dictation_context(el: Element) -> Optional[AccessibilityContext]:
-        """Creates a `AccessibilityContext` representing the state of the input buffer
-        for dictation mode
+        """Creates a `AccessibilityContext` representing the state of the input buffer for dictation mode
         """
         if not actions.user.accessibility_dictation_enabled():
             return None
