@@ -1,17 +1,10 @@
 import time
 import traceback
 
-from talon import (
-    actions,
-    cron,
-    noise,
-    ui,
-)
+from talon import Module, actions, cron, noise, ui
 from talon.mac.ui import Element
 
 HISS_DEBUG_ENABLED = True
-
-from talon import Module
 
 mod = Module()
 setting_enabled = mod.setting(
@@ -27,15 +20,16 @@ setting_threshold = mod.setting(
     desc="If hiss_to_debug_accessibility is enabled, the hissing duration (in seconds) needed to trigger the debug output.",
 )
 
+
 @mod.action_class
 class Actions:
 
     def debug_accessibility(el: Element = None):
-        """short function for debugging accessibility"""
+        """Prints information about the currently focused UI element to the terminal, for debugging"""
 
         if not el:
             el = ui.focused_element()
-        
+
         try:
             # TODO(pcohen): make this work without Rich installed
             from rich.console import Console
@@ -53,13 +47,16 @@ class Actions:
             print(f"Exception while debugging accessibility: \"{e}\":")
             traceback.print_exc()
 
+
 active_hiss = {"cron": None}
+
 
 def hiss_over_threshold():
     if not active_hiss.get("start"):
         return False
 
     return time.time() - active_hiss["start"] > setting_threshold.get()
+
 
 def stop_hiss():
     trigger = hiss_over_threshold()
@@ -73,13 +70,16 @@ def stop_hiss():
     if trigger:
         actions.user.debug_accessibility()
 
+
 def check_hiss():
     if hiss_over_threshold():
         stop_hiss()
 
+
 def start_hiss():
     active_hiss["start"] = time.time()
     active_hiss["cron"] = cron.interval("32ms", check_hiss)
+
 
 def on_hiss(noise_active: bool):
     if not setting_enabled.get():
@@ -89,5 +89,6 @@ def on_hiss(noise_active: bool):
         start_hiss()
     else:
         stop_hiss()
+
 
 noise.register('hiss', on_hiss)

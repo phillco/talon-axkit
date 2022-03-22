@@ -1,6 +1,6 @@
 from typing import Optional
 
-from talon import Context, ui, Module, actions
+from talon import Context, Module, actions, ui
 from talon.mac.ui import App
 from talon.ui import UIErr
 
@@ -9,7 +9,7 @@ ctx.matches = "os: mac"
 
 mod = Module()
 setting_electron_accessibility = mod.setting(
-    "electron_accessibility",
+    "enable_electron_accessibility",
     type=bool,
     default=False,
     desc="Tells Electron apps to enable their accessibility trees, so that you can use accessibility dictation with them. Note that this could cause worse performance, depending on the app.",

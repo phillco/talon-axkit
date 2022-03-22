@@ -2,7 +2,7 @@ import traceback
 from dataclasses import dataclass
 from typing import Optional
 
-from talon import Context, ui, Module, actions
+from talon import Context, Module, actions, ui
 from talon.mac.ui import Element
 from talon.types import Span
 
@@ -42,15 +42,16 @@ class AccessibilityContext:
 @mod.action_class
 class ModActions:
 
-    def accessibility_dictation_enabled():
-        """Just exports `setting_accessibility_dictation` for use in other files"""
+    def accessibility_dictation_enabled() -> bool:
+        """Returns whether accessibility dictation should be used"""
+        # NB: for access within other files, since they can't import `setting_accessibility_dictation`
         return setting_accessibility_dictation.get()
     
     def dictation_current_element() -> Element:
-        """Returns the accessibility element that should be use for dictation (i.e.
+        """Returns the accessibility element that should be used for dictation (i.e.
         the current input textbox).
         
-        This is always always the focused (current) element, however, this function
+        This is almost always the focused (current) element, however, this action
         exists so that context can overwrite it, for applications with strange behavior.
         """
         return ui.focused_element()
@@ -105,7 +106,7 @@ class Colors:
 
 @ctx.action_class("self")
 class Actions:
-    """Wires this in to the knausj dictation formatter"""
+    """Wires this into the knausj dictation formatter"""
 
     def dictation_peek_left(clobber=False):
         try:
