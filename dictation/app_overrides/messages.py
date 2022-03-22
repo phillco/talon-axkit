@@ -7,7 +7,7 @@ app: messages
 """
 mod = Module()
 
-@ctx.action_class
+@ctx.action_class("self")
 class Actions:
     
     def accessibility_adjust_context_for_application(el, context):
@@ -17,3 +17,4 @@ class Actions:
             context.content = ""
         
         return context
+
