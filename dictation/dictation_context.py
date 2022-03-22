@@ -61,10 +61,10 @@ class ModActions:
         """Hook for applications to override the reported buffer contents/cursor location.
         
         Sometimes the accessibility context reported by the application is wrong, but fixable in predictable ways (this is most common in Electron apps). This method can be overwritten in those applications to do so.
-        
-        TODO(pcohen): it's a it strange to have both this and dictation_current_element;
-        possibly refactor.
         """
+        
+        # TODO(pcohen): it's a it strange to have both this and dictation_current_element;
+        # possibly refactor.
         return context
 
     def accessibility_create_dictation_context(el: Element) -> Optional[AccessibilityContext]:

@@ -24,8 +24,8 @@ class ModActions:
         
         try:
             app.element.AXManualAccessibility = True
-        except UIErr as e:
-            # this will raise "Error setting element attribute" even on success.
+        except UIErr:
+            # This will raise "Error setting element attribute" even on success.
             pass
 
 
