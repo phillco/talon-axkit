@@ -1,5 +1,6 @@
 import traceback
 from dataclasses import dataclass
+from enum import Enum
 from typing import Optional
 
 from talon import Context, Module, actions, ui
@@ -96,7 +97,7 @@ class ModActions:
 
 
 # TODO(pcohen): relocate this
-class Colors:
+class Colors(Enum):
     RESET = '\033[0m'
     RED = '\033[31m'
     YELLOW = '\033[33m'
@@ -110,12 +111,12 @@ class Actions:
             el = actions.user.dictation_current_element()
             context = actions.user.accessibility_create_dictation_context(el)
             if context is None:
-                print(f"{Colors.YELLOW}Accessibility not available for context-aware dictation{Colors.RESET}; falling back to cursor method")
+                print(f"{Colors.YELLOW.value}Accessibility not available for context-aware dictation{Colors.RESET.value}; falling back to cursor method")
                 return actions.next()
-    
+
             return context.left_context()
         except Exception as e:
-            print(f"{Colors.RED}{type(e).__name__} while querying accessibility for context-aware dictation:{Colors.RESET} '{e}':")
+            print(f"{Colors.RED.value}{type(e).__name__} while querying accessibility for context-aware dictation:{Colors.RESET.value} '{e}':")
             traceback.print_exc()
             
             # Fallback to the original (keystrokes) knausj method.
@@ -127,12 +128,12 @@ class Actions:
             context = actions.user.accessibility_create_dictation_context(el)
             if context is None:
                 print(
-                    f"{Colors.YELLOW}Accessibility not available for context-aware dictation{Colors.RESET}; falling back to cursor method")
+                    f"{Colors.YELLOW.value}Accessibility not available for context-aware dictation{Colors.RESET.value}; falling back to cursor method")
                 return actions.next()
 
             return context.right_context()
         except Exception as e:
-            print(f"{Colors.RED}{type(e).__name__} while querying accessibility for context-aware dictation:{Colors.RESET} '{e}':")
+            print(f"{Colors.RED.value}{type(e).__name__} while querying accessibility for context-aware dictation:{Colors.RESET.value} '{e}':")
             traceback.print_exc()
 
             # Fallback to the original (keystrokes) knausj method.
