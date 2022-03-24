@@ -15,13 +15,14 @@ setting_electron_accessibility = mod.setting(
     desc="Tells Electron apps to enable their accessibility trees, so that you can use accessibility dictation with them. Note that this could cause worse performance, depending on the app.",
 )
 
+
 @mod.action_class
 class ModActions:
     def enable_electron_accessibility(app: Optional[App] = None):
         """Enables AX support in Electron - may affect performance"""
         if not app:
             app = ui.active_app()
-        
+
         try:
             app.element.AXManualAccessibility = True
         except UIErr:
@@ -32,5 +33,6 @@ class ModActions:
 def app_activate(app):
     if setting_electron_accessibility.get():
         actions.user.enable_electron_accessibility(app)
+
 
 ui.register("app_activate", app_activate)

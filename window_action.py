@@ -1,5 +1,6 @@
-from talon import Context, Module, actions, app, ui, cron
-if app.platform == 'mac':
+from talon import Context, Module, actions, app, ui
+
+if app.platform == "mac":
     from talon.mac.ui import App, Window
 else:
     App = Window = None
@@ -17,6 +18,7 @@ property_mapping = {
     # so you can only go one way for now
     "fullscreen": "AXFullScreenButton",
 }
+
 
 @mod.action_class
 class Actions:
@@ -39,7 +41,9 @@ class Actions:
             except Exception as e:
                 print(f"Error {action}'ing window {window.title}: {type(e)} {e}")
 
-    def action_windows_app(app: App, action: str = "close", on_current: bool = True, on_others: bool = True):
+    def action_windows_app(
+        app: App, action: str = "close", on_current: bool = True, on_others: bool = True
+    ):
         """Actions windows for the given application
 
         `on_current`: whether to affect the current window
@@ -56,7 +60,12 @@ class Actions:
             # (at least not with any single application)
             actions.user.action_window(window, action)
 
-    def action_windows(action: str = "close", on_current: bool = True, on_others: bool = True, app_name: str = None):
+    def action_windows(
+        action: str = "close",
+        on_current: bool = True,
+        on_others: bool = True,
+        app_name: str = None,
+    ):
         """Closes windows for the given application name; if None, defaults to the current application
 
         `on_current`: whether to affect the current window
@@ -67,7 +76,6 @@ class Actions:
         else:
             app = ui.active_app()
 
-        actions.user.action_windows_app(app,
-                                        action,
-                                        on_current=on_current,
-                                        on_others=on_others)
+        actions.user.action_windows_app(
+            app, action, on_current=on_current, on_others=on_others
+        )
