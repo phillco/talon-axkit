@@ -23,7 +23,6 @@ setting_threshold = mod.setting(
 
 @mod.action_class
 class Actions:
-
     def debug_accessibility(el: Element = None):
         """Prints information about the currently focused UI element to the terminal, for debugging"""
 
@@ -33,6 +32,7 @@ class Actions:
         try:
             # TODO(pcohen): make this work without Rich installed
             from rich.console import Console
+
             console = Console(color_system="truecolor", soft_wrap=True)
 
             console.rule(f"{str(el)}'s attributes:")
@@ -44,7 +44,7 @@ class Actions:
 
             console.print(attributed, markup=False)
         except Exception as e:
-            print(f"Exception while debugging accessibility: \"{e}\":")
+            print(f'Exception while debugging accessibility: "{e}":')
             traceback.print_exc()
 
 
@@ -91,4 +91,4 @@ def on_hiss(noise_active: bool):
         stop_hiss()
 
 
-noise.register('hiss', on_hiss)
+noise.register("hiss", on_hiss)
