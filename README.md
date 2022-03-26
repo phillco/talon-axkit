@@ -1,4 +1,12 @@
-# talon_accessibility
+
+```
+░█████╗░██╗░░██╗██╗░░██╗██╗████████╗
+██╔══██╗╚██╗██╔╝██║░██╔╝██║╚══██╔══╝
+███████║░╚███╔╝░█████═╝░██║░░░██║░░░
+██╔══██║░██╔██╗░██╔═██╗░██║░░░██║░░░
+██║░░██║██╔╝╚██╗██║░╚██╗██║░░░██║░░░
+╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░░╚═╝░░░
+```
 
 Experimental [Talon](https://talonvoice.com/) integrations using macOS accessibility APIs.
 
@@ -28,7 +36,7 @@ Clone alongside knausj in your `.talon/user` folder:
 
 ```
 $ cd ~/.talon/user/
-$ git clone https://github.com/phillco/talon_accessibility.git
+$ git clone https://github.com/phillco/talon_axkit.git
 ```
 
 This repo requires a [knausj](https://github.com/knausj85/knausj_talon) checkout in your user/ folder, but it doesn't need to be super recent -- anything after April 2021 should work.
