@@ -49,5 +49,5 @@ class UserActions:
 			role == 'AXSplitGroup' and el.get('AXIdentifier') == 'Document Pane' # Word
 		):
 			for textarea in el.children.find(AXRole='AXTextArea'):
-				if textarea.AXSelectedTextRange.left != 9223372036854775807: # NSNotFound
+				if textarea.AXSelectedTextRange.left is not None: # NSNotFound
 					return textarea
