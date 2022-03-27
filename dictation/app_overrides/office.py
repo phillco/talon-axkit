@@ -1,4 +1,4 @@
-from talon import Context, Module, ui, actions
+from talon import Context, Module, ui
 
 ctx = Context()
 ctx.matches = """
@@ -34,20 +34,19 @@ ctx.matches = """
 app: office_mac
 """
 
+
 @ctx.action_class("user")
 class UserActions:
-	def dictation_current_element():
-		# Work around focused element being initially set incorrectly
-		# in Mac Office apps.
-		el = ui.focused_element()
-		role = el.AXRole
-		if role == 'AXTextArea':
-			return el
-		elif (
-			role == 'AXScrollArea' # Outlook, PowerPoint
-		) or (
-			role == 'AXSplitGroup' and el.get('AXIdentifier') == 'Document Pane' # Word
-		):
-			for textarea in el.children.find(AXRole='AXTextArea'):
-				if textarea.AXSelectedTextRange.left is not None: # NSNotFound
-					return textarea
+    def dictation_current_element():
+        # Work around focused element being initially set incorrectly
+        # in Mac Office apps.
+        el = ui.focused_element()
+        role = el.AXRole
+        if role == "AXTextArea":
+            return el
+        elif (role == "AXScrollArea") or (  # Outlook, PowerPoint
+            role == "AXSplitGroup" and el.get("AXIdentifier") == "Document Pane"  # Word
+        ):
+            for textarea in el.children.find(AXRole="AXTextArea"):
+                if textarea.AXSelectedTextRange.left is not None:  # NSNotFound
+                    return textarea
