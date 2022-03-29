@@ -73,11 +73,12 @@ class Notification:
         # XXX create_spoken_forms_from_list doesn't handle apostrophes correctly
         # https://github.com/knausj85/knausj_talon/issues/780
         group_actions = {
-            name.lower().replace("’", "'"): action for action, name in group_actions.items()
+            name.lower().replace("’", "'"): action
+            for action, name in group_actions.items()
         }
 
         title = body = subtitle = None
-        
+
         try:
             title = group.children.find_one(AXIdentifier="title").AXValue
         except ui.UIErr:
@@ -87,7 +88,7 @@ class Notification:
             body = group.children.find_one(AXIdentifier="body").AXValue
         except ui.UIErr:
             pass
-        
+
         try:
             subtitle = group.children.find_one(AXIdentifier="subtitle").AXValue
         except ui.UIErr:
