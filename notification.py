@@ -51,6 +51,7 @@ class Notification:
     app_name: str = field(default=None, compare=False)
     stacking_identifier: str = field(default=None, compare=False)
     title: str = field(default=None, compare=False)
+    subtitle: str = field(default=None, compare=False)
     body: str = field(default=None, compare=False)
     # action values are named "Name:<name>\nTarget:0x0\nSelector:(null)"; keys are speakable
     actions: dict[str, str] = field(default=None, compare=False)
@@ -66,24 +67,29 @@ class Notification:
 
     @staticmethod
     def from_group(group, identifier):
-        actions = group.actions
-        if "AXScrollToVisible" in actions:
-            del actions["AXScrollToVisible"]  # not useful
+        group_actions = group.actions
+        if "AXScrollToVisible" in group_actions:
+            del group_actions["AXScrollToVisible"]  # not useful
         # XXX create_spoken_forms_from_list doesn't handle apostrophes correctly
         # https://github.com/knausj85/knausj_talon/issues/780
-        actions = {
-            name.lower().replace("’", "'"): action for action, name in actions.items()
+        group_actions = {
+            name.lower().replace("’", "'"): action for action, name in group_actions.items()
         }
 
-        title = None
+        title = body = subtitle = None
+        
         try:
             title = group.children.find_one(AXIdentifier="title").AXValue
         except ui.UIErr:
             pass
 
-        body = None
         try:
             body = group.children.find_one(AXIdentifier="body").AXValue
+        except ui.UIErr:
+            pass
+        
+        try:
+            subtitle = group.children.find_one(AXIdentifier="subtitle").AXValue
         except ui.UIErr:
             pass
 
@@ -93,8 +99,9 @@ class Notification:
             app_name=group.AXDescription,
             stacking_identifier=group.AXStackingIdentifier,
             title=title,
+            subtitle=subtitle,
             body=body,
-            actions=actions,
+            actions=group_actions,
         )
 
     @staticmethod
