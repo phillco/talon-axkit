@@ -4,7 +4,8 @@ from enum import Enum
 from typing import Optional
 
 from talon import Context, Module, actions, app, ui
-if app.platform == 'mac':
+
+if app.platform == "mac":
     from talon.mac.ui import Element
 else:
     Element = type(None)

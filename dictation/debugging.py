@@ -2,7 +2,8 @@ import time
 import traceback
 
 from talon import Module, actions, app, cron, noise, ui
-if app.platform == 'mac':
+
+if app.platform == "mac":
     from talon.mac.ui import Element
 else:
     Element = type(None)
