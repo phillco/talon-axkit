@@ -1,10 +1,6 @@
 from talon import Context, Module, ui
 
 ctx = Context()
-ctx.matches = """
-os: mac
-app: messages
-"""
 mod = Module()
 
 mod.apps.excel_mac = """
