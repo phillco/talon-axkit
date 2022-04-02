@@ -11,19 +11,33 @@ mod = Module()
 mod.list("notification_actions", desc="Notification actions")
 mod.list("notification_apps", desc="Notification apps")
 
+notification_debug = mod.setting(
+    "notification_debug",
+    type=bool,
+    default=False,
+    desc="Display macOS notification debugging information.",
+)
+
 try:
     from rich.console import Console
 
-    def print(obj: any, *args):
+    console = Console(color_system="truecolor", soft_wrap=True)
+
+    def debug_print(obj: any, *args):
         """Pretty prints the object"""
-        console = Console(color_system="truecolor", soft_wrap=True)
+        if not notification_debug.get():
+            return
         if args:
             console.out(obj, *args)
         else:
             console.print(obj)
 
 except ImportError:
-    pass
+
+    def debug_print(obj: any, *args):
+        if not notification_debug.get():
+            return
+        print(obj, *args)
 
 
 @mod.action_class
@@ -215,8 +229,6 @@ class NotificationMonitor:
             if identifier != notification.identifier:
                 continue
 
-            print(f"performing {action} in {notification.actions}")
-
             if action not in notification.actions:
                 # allow closing a notification stack like an individual notification
                 if action == "close" and "clear all" in notification.actions:
@@ -248,7 +260,7 @@ class NotificationMonitor:
 
         self.notifications = list(notifications.values())
         if notifications:
-            print(notifications)
+            debug_print(notifications)
 
         notification_actions = set()
         notification_apps = set()
@@ -279,7 +291,7 @@ class NotificationMonitor:
                 if "apostrophe" not in spoken_form
             }
         if notification_actions:
-            print("actions", notification_actions)
+            debug_print("actions", notification_actions)
 
         if "close" not in notification_actions and "clear all" in notification_actions:
             # allow closing a notification stack like an individual notification
@@ -292,7 +304,7 @@ class NotificationMonitor:
         )
         ctx.lists["user.notification_apps"] = notification_apps
         if notification_apps:
-            print("apps", notification_apps)
+            debug_print("apps", notification_apps)
 
     def win_close(self, window):
         if not window.app.pid == self.pid:
