@@ -4,7 +4,11 @@ from enum import Enum
 from typing import Optional
 
 from talon import Context, Module, actions, ui
-from talon.mac.ui import Element
+
+try:
+    from talon.mac.ui import Element
+except ImportError:
+    Element = type(None)
 from talon.types import Span
 
 ctx = Context()

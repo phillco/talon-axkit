@@ -2,7 +2,11 @@ import time
 import traceback
 
 from talon import Module, actions, cron, noise, ui
-from talon.mac.ui import Element
+
+try:
+    from talon.mac.ui import Element
+except ImportError:
+    Element = type(None)
 
 HISS_DEBUG_ENABLED = True
 
