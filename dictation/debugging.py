@@ -1,11 +1,11 @@
 import time
 import traceback
 
-from talon import Module, actions, app, cron, noise, ui
+from talon import Module, actions, cron, noise, ui
 
-if app.platform == "mac":
+try:
     from talon.mac.ui import Element
-else:
+except ImportError:
     Element = type(None)
 
 HISS_DEBUG_ENABLED = True

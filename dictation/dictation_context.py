@@ -3,11 +3,11 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from talon import Context, Module, actions, app, ui
+from talon import Context, Module, actions, ui
 
-if app.platform == "mac":
+try:
     from talon.mac.ui import Element
-else:
+except ImportError:
     Element = type(None)
 from talon.types import Span
 
