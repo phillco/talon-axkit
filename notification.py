@@ -4,7 +4,7 @@ from typing import Optional
 
 from talon import Context, Module, actions, app, cron, ui
 
-# XXX actions are being returned out of order; that's a problem if we want to pop up a menu
+# XXX(nriley) actions are being returned out of order; that's a problem if we want to pop up a menu
 
 mod = Module()
 
@@ -84,7 +84,7 @@ class Notification:
         group_actions = group.actions
         if "AXScrollToVisible" in group_actions:
             del group_actions["AXScrollToVisible"]  # not useful
-        # XXX create_spoken_forms_from_list doesn't handle apostrophes correctly
+        # XXX(nriley) create_spoken_forms_from_list doesn't handle apostrophes correctly
         # https://github.com/knausj85/knausj_talon/issues/780
         group_actions = {
             name.lower().replace("’", "'"): action
@@ -270,7 +270,7 @@ class NotificationMonitor:
             notification_apps.add(notification.app_name)
 
         notification_actions = list(notification_actions)
-        # XXX create_spoken_forms_from_list doesn't handle apostrophes correctly
+        # XXX(nriley) create_spoken_forms_from_list doesn't handle apostrophes correctly
         # https://github.com/knausj85/knausj_talon/issues/780
         apostrophe_words = {
             word.replace("'", " "): word
@@ -298,7 +298,7 @@ class NotificationMonitor:
             notification_actions["close"] = "clear all"
         ctx.lists["user.notification_actions"] = notification_actions
 
-        # XXX use app name overrides from knausj?
+        # XXX(nriley) use app name overrides from knausj?
         notification_apps = actions.user.create_spoken_forms_from_list(
             notification_apps
         )
