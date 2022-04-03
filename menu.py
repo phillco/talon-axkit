@@ -22,7 +22,7 @@ class Actions:
             menu_path.append(
                 selected_item.AXTitle.replace("\\", r"\\").replace("|", r"\|")
             )
-            # XXX this is True even if list empty - report Talon bug? children also doesn't support len()
+            # XXX(nriley) this is True even if list empty - report Talon bug? children also doesn't support len()
             # print(selected_item.children, bool(selected_item.children))
             try:
                 selected_menu = selected_item.children.find_one(
