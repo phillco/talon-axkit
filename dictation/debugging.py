@@ -4,7 +4,7 @@ import traceback
 from talon import Module, actions, cron, noise, ui
 
 try:
-    from talon.mac.ui import Element
+    from talon.ui import Element
 except ImportError:
     Element = type(None)
 
