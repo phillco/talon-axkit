@@ -6,7 +6,7 @@ from typing import Optional
 from talon import Context, Module, actions, ui
 
 try:
-    from talon.mac.ui import Element
+    from talon.ui import Element
 except ImportError:
     Element = type(None)
 from talon.types import Span
