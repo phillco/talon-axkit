@@ -398,6 +398,10 @@ class Actions:
                 menu_keys.append(key_name)
                 got_key = True
 
+        # XXX(nriley) consider accounting for glyphs in some cases
+        # Example: "Num Lock" in Terminal has kVK_Escape but kMenuClearGlyph
+        # However, cmd-esc works fine to trigger it
+
         if not got_key:
             no_key_message = []
             if virtual_key is not None:
