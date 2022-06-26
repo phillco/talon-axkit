@@ -287,7 +287,6 @@ def selected_menu_and_path():
             return None, []
         menu = selected_menu
         while True:
-            print(menu.dump())
             if menu.AXRole in ("AXMenuItem", "AXMenuBarItem"):
                 menu_path.append(menu.AXTitle)
             menu = menu.AXParent
@@ -336,7 +335,7 @@ class Actions:
         """Copies TalonScript to press the key equivalent of the menu item that is currently highlighted"""
         selected_menu, menu_path = selected_menu_and_path()
 
-        if not selected_menu or selected_menu.AXRole == "AXMenuItem":
+        if (not selected_menu) or selected_menu.AXRole != "AXMenuItem":
             app.notify("No menu item under the mouse pointer")
             return
 
