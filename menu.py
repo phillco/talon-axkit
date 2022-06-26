@@ -274,12 +274,13 @@ VK_NAMES = {
 }
 
 
-def active_menubar():
+def active_menu_bar():
     return ui.active_app().children.find_one(AXRole="AXMenuBar", max_depth=0)
 
 
 def selected_menu_and_path():
-    selected_menu = active_menubar()
+    """Returns selected element in menu bar, and path to it"""
+    selected_menu = active_menu_bar()
     menu_path = []
     while True:
         if not selected_menu.AXSelectedChildren:
@@ -295,32 +296,58 @@ def selected_menu_and_path():
         except ui.UIErr:
             break
 
-    if hasattr(ui, "element_at") and selected_menu.AXRole != "AXMenuItem":
-        menu_path = []
-        selected_menu = ui.element_at(*ctrl.mouse_pos())
-        if selected_menu.AXRole in ("AXMenu", "AXMenuItem"):
-            menu = selected_menu
-            while True:
-                if menu.AXRole in ("AXMenuItem", "AXMenuBarItem"):
-                    menu_path.append(menu.AXTitle)
-                menu = menu.AXParent
-                if menu.AXRole == "AXMenu":
-                    menu = menu.AXParent
-                else:
-                    menu_path.reverse()
-                    break
-
     return selected_menu, menu_path
+
+
+def mouse_pos_menu_and_path():
+    """Returns element in menu bar under cursor, and path to it"""
+    menu_path = []
+    element_at_mouse_pos = ui.element_at(*ctrl.mouse_pos())
+    if element_at_mouse_pos.AXRole in ("AXMenu", "AXMenuItem", "AXMenuBarItem"):
+        menu = element_at_mouse_pos
+        while True:
+            if menu.AXRole in ("AXMenuItem", "AXMenuBarItem"):
+                menu_path.append(menu.AXTitle)
+            menu = menu.AXParent
+            if menu.AXRole == "AXMenu":
+                menu = menu.AXParent
+            elif menu.AXRole == "AXMenuBar":
+                menu_path.reverse()
+                break
+        else:  # not in menu bar
+            return None, []
+
+    return element_at_mouse_pos, menu_path
+
+
+def selected_menu_path_strategy():
+    """Returns 'selected' element in menu bar, path to it and strategy used to find it"""
+    selected_menu, selected_menu_path = selected_menu_and_path()
+
+    if (
+        selected_menu_path
+        and hasattr(ui, "element_at")
+        and selected_menu.AXRole != "AXMenuItem"
+    ):
+        element_at_mouse_pos, mouse_pos_menu_path = mouse_pos_menu_and_path()
+        if element_at_mouse_pos and len(mouse_pos_menu_path) > len(selected_menu_path):
+            return (
+                element_at_mouse_pos,
+                mouse_pos_menu_path,
+                "Found under mouse pointer",
+            )
+
+    return selected_menu, selected_menu_path, "Found selected"
 
 
 @mod.action_class
 class Actions:
     def copy_menu_select():
         """Copies TalonScript to select the menu item that is currently highlighted"""
-        _, menu_path = selected_menu_and_path()
+        _, menu_path, strategy = selected_menu_path_strategy()
 
         if not menu_path:
-            app.notify("No menu item selected or under the mouse pointer")
+            app.notify("No menu bar item selected or under the mouse pointer")
             return
 
         escaped_menu_path = [
@@ -328,14 +355,16 @@ class Actions:
         ]
 
         clip.set_text(f'user.menu_select({"|".join(escaped_menu_path)!r})')
-        app.notify("Copied TalonScript to select menu item", " ▸ ".join(menu_path))
+        app.notify(
+            "Copied TalonScript to select menu item", " ▸ ".join(menu_path), strategy
+        )
 
     def copy_menu_key():
         """Copies TalonScript to press the key equivalent of the menu item that is currently highlighted"""
-        selected_menu, menu_path = selected_menu_and_path()
+        selected_menu, menu_path, strategy = selected_menu_path_strategy()
 
         if (not selected_menu) or selected_menu.AXRole != "AXMenuItem":
-            app.notify("No menu item selected or under the mouse pointer")
+            app.notify("No menu bar item selected or under the mouse pointer")
             return
 
         key_char = selected_menu.get("AXMenuItemCmdChar")
@@ -386,7 +415,9 @@ class Actions:
 
         talonscript = f'key({"-".join(menu_keys)})'
         clip.set_text(talonscript)
-        app.notify(f"Copied TalonScript: {talonscript}", " ▸ ".join(menu_path))
+        app.notify(
+            f"Copied TalonScript: {talonscript}", " ▸ ".join(menu_path), strategy
+        )
 
     def menu_select(menu_path: str) -> bool:
         """Selects the menu item at the specified |-delimited path, or returns False if it does not exist"""
@@ -396,7 +427,7 @@ class Actions:
         ]
         menu_title = menu_path[0]
         try:
-            menu_item = active_menubar().children.find_one(
+            menu_item = active_menu_bar().children.find_one(
                 AXRole="AXMenuBarItem", AXTitle=menu_title
             )
         except ui.UIErr:
