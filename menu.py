@@ -8,7 +8,7 @@ mod = Module()
 # https://lists.apple.com/archives/accessibility-dev/2004/Apr/msg00019.html
 
 # from <HIToolbox/Menus.h>
-kMenuNoModifiers = (0,)  # Mask for no modifiers
+kMenuNoModifiers = 0  # Mask for no modifiers
 kMenuShiftModifier = 1 << 0  # Mask for shift key modifier
 kMenuOptionModifier = 1 << 1  # Mask for option key modifier
 kMenuControlModifier = 1 << 2  # Mask for control key modifier
@@ -26,9 +26,8 @@ kMenuShiftGlyph = 0x05  # Shift key
 kMenuControlGlyph = 0x06  # Control key
 kMenuOptionGlyph = 0x07  # Option key
 kMenuSpaceGlyph = 0x09  # Space (always glyph 3) key
-kMenuDeleteRightGlyph = (
-    0x0A  # Delete to the right key (for right-to-left script systems)
-)
+# Delete to the right key (for right-to-left script systems)
+kMenuDeleteRightGlyph = 0x0A
 kMenuReturnGlyph = 0x0B  # Return key (for left-to-right script systems)
 kMenuReturnR2LGlyph = 0x0C  # Return key (for right-to-left script systems)
 kMenuNonmarkingReturnGlyph = 0x0D  # Nonmarking return key
@@ -46,9 +45,8 @@ kMenuRightArrowDashedGlyph = 0x1A  # Rightward dashed arrow key
 kMenuEscapeGlyph = 0x1B  # Escape key
 kMenuClearGlyph = 0x1C  # Clear key
 kMenuLeftDoubleQuotesJapaneseGlyph = 0x1D  # Unassigned (left double quotes in Japanese)
-kMenuRightDoubleQuotesJapaneseGlyph = (
-    0x1E  # Unassigned (right double quotes in Japanese)
-)
+# Unassigned (right double quotes in Japanese)
+kMenuRightDoubleQuotesJapaneseGlyph = 0x1E
 kMenuTrademarkJapaneseGlyph = 0x1F  # Unassigned (trademark in Japanese)
 kMenuBlankGlyph = 0x61  # Blank key
 kMenuPageUpGlyph = 0x62  # Page up key
