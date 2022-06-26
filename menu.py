@@ -279,25 +279,9 @@ def active_menubar():
 
 
 def selected_menu_and_path():
-    menu_path = []
-
-    if hasattr(ui, "element_at"):
-        selected_menu = ui.element_at(*ctrl.mouse_pos())
-        if selected_menu.AXRole not in ("AXMenu", "AXMenuItem"):
-            return None, []
-        menu = selected_menu
-        while True:
-            if menu.AXRole in ("AXMenuItem", "AXMenuBarItem"):
-                menu_path.append(menu.AXTitle)
-            menu = menu.AXParent
-            if menu.AXRole == "AXMenu":
-                menu = menu.AXParent
-            else:
-                menu_path.reverse()
-                return selected_menu, menu_path
-
     selected_menu = active_menubar()
     while True:
+        menu_path = []
         if not selected_menu.AXSelectedChildren:
             break
         selected_menu = selected_menu.AXSelectedChildren[0]
@@ -311,6 +295,21 @@ def selected_menu_and_path():
         except ui.UIErr:
             break
 
+    if hasattr(ui, "element_at") and selected_menu.AXRole != "AXMenuItem":
+        menu_path = []
+        selected_menu = ui.element_at(*ctrl.mouse_pos())
+        if selected_menu.AXRole in ("AXMenu", "AXMenuItem"):
+            menu = selected_menu
+            while True:
+                if menu.AXRole in ("AXMenuItem", "AXMenuBarItem"):
+                    menu_path.append(menu.AXTitle)
+                menu = menu.AXParent
+                if menu.AXRole == "AXMenu":
+                    menu = menu.AXParent
+                else:
+                    menu_path.reverse()
+                    break
+
     return selected_menu, menu_path
 
 
@@ -321,7 +320,7 @@ class Actions:
         _, menu_path = selected_menu_and_path()
 
         if not menu_path:
-            app.notify("No menu item selected")
+            app.notify("No menu item selected or under the mouse pointer")
             return
 
         escaped_menu_path = [
@@ -336,7 +335,7 @@ class Actions:
         selected_menu, menu_path = selected_menu_and_path()
 
         if (not selected_menu) or selected_menu.AXRole != "AXMenuItem":
-            app.notify("No menu item under the mouse pointer")
+            app.notify("No menu item selected or under the mouse pointer")
             return
 
         key_char = selected_menu.get("AXMenuItemCmdChar")
