@@ -280,8 +280,8 @@ def active_menubar():
 
 def selected_menu_and_path():
     selected_menu = active_menubar()
+    menu_path = []
     while True:
-        menu_path = []
         if not selected_menu.AXSelectedChildren:
             break
         selected_menu = selected_menu.AXSelectedChildren[0]
