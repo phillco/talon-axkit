@@ -373,9 +373,6 @@ class Actions:
         glyph = selected_menu.get("AXMenuItemCmdGlyph")
         virtual_key = selected_menu.get("AXMenuItemCmdVirtualKey")
 
-        # XXX(nriley): debugging
-        print(selected_menu.dump())
-
         menu_keys = []
 
         if modifiers is not None:
@@ -404,11 +401,12 @@ class Actions:
         if not got_key:
             no_key_message = []
             if virtual_key is not None:
-                no_key_message.append(f"Virtual key code: {virtual_key:X}")
+                no_key_message.append(f"virtual key code {virtual_key:X}")
             if glyph is not None:
-                no_key_message.append(f"Glyph: {glyph:X}")
+                no_key_message.append(f"glyph {glyph:X}")
             if no_key_message:
-                print("Unsupported key:", " - ".join(no_key_message))
+                print("Unsupported key with", ", ".join(no_key_message))
+                print(selected_menu.dump())
                 app.notify("Key not supported", "\n".join(no_key_message))
             else:
                 app.notify("Key not found")
