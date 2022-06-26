@@ -1,6 +1,6 @@
 import re
 
-from talon import Module, app, clip, ui
+from talon import Module, app, clip, ctrl, ui
 
 mod = Module()
 
@@ -279,8 +279,25 @@ def active_menubar():
 
 
 def selected_menu_and_path():
-    selected_menu = active_menubar()
     menu_path = []
+
+    if hasattr(ui, "element_at"):
+        selected_menu = ui.element_at(*ctrl.mouse_pos())
+        if selected_menu.AXRole not in ("AXMenu", "AXMenuItem"):
+            return None, []
+        menu = selected_menu
+        while True:
+            print(menu.dump())
+            if menu.AXRole in ("AXMenuItem", "AXMenuBarItem"):
+                menu_path.append(menu.AXTitle)
+            menu = menu.AXParent
+            if menu.AXRole == "AXMenu":
+                menu = menu.AXParent
+            else:
+                menu_path.reverse()
+                return selected_menu, menu_path
+
+    selected_menu = active_menubar()
     while True:
         if not selected_menu.AXSelectedChildren:
             break
@@ -304,6 +321,10 @@ class Actions:
         """Copies TalonScript to select the menu item that is currently highlighted"""
         _, menu_path = selected_menu_and_path()
 
+        if not menu_path:
+            app.notify("No menu item selected")
+            return
+
         escaped_menu_path = [
             title.replace("\\", r"\\").replace("|", r"\|") for title in menu_path
         ]
@@ -315,8 +336,8 @@ class Actions:
         """Copies TalonScript to press the key equivalent of the menu item that is currently highlighted"""
         selected_menu, menu_path = selected_menu_and_path()
 
-        if not selected_menu.AXRole == "AXMenuItem":
-            app.notify("No enabled menu item under the mouse pointer")
+        if not selected_menu or selected_menu.AXRole == "AXMenuItem":
+            app.notify("No menu item under the mouse pointer")
             return
 
         key_char = selected_menu.get("AXMenuItemCmdChar")
