@@ -356,7 +356,8 @@ class Actions:
 
         clip.set_text(f'user.menu_select({"|".join(escaped_menu_path)!r})')
         app.notify(
-            "Copied TalonScript to select menu item", " ▸ ".join(menu_path), strategy
+            "Copied TalonScript to select menu item",
+            body=f'{" ▸ ".join(menu_path)}\n{strategy}',
         )
 
     def copy_menu_key():
@@ -416,7 +417,8 @@ class Actions:
         talonscript = f'key({"-".join(menu_keys)})'
         clip.set_text(talonscript)
         app.notify(
-            f"Copied TalonScript: {talonscript}", " ▸ ".join(menu_path), strategy
+            f"Copied TalonScript: {talonscript}",
+            body=f'{" ▸ ".join(menu_path)}\n{strategy}',
         )
 
     def menu_select(menu_path: str) -> bool:
