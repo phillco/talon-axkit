@@ -287,7 +287,7 @@ def selected_menu_and_path():
             break
         selected_menu = selected_menu.AXSelectedChildren[0]
 
-        if not (title := selected_menu.get('AXTitle')):
+        if not (title := selected_menu.get("AXTitle")):
             return selected_menu, menu_path
 
         menu_path.append(selected_menu.AXTitle)
