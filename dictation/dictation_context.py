@@ -131,7 +131,7 @@ class Actions:
             traceback.print_exc()
 
             # Fallback to the original (keystrokes) knausj method.
-            actions.next()
+            return actions.next()
 
     def dictation_peek_right():
         try:
@@ -151,4 +151,4 @@ class Actions:
             traceback.print_exc()
 
             # Fallback to the original (keystrokes) knausj method.
-            actions.next()
+            return actions.next()
