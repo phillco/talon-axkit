@@ -343,6 +343,7 @@ def selected_menu_path_strategy():
 
     return selected_menu, selected_menu_path, "Found selected"
 
+
 def selected_menu_key_path_strategy():
     """Returns Talon-format key equivalent of the menu item that is currently highlighted,
     , path to it and strategy used to find it"""
@@ -402,6 +403,7 @@ def selected_menu_key_path_strategy():
 
     return "-".join(menu_keys), menu_path, strategy
 
+
 @mod.action_class
 class Actions:
     def copy_menu_select():
@@ -427,7 +429,7 @@ class Actions:
 
         menu_key, menu_path, strategy = selected_menu_key_path_strategy()
 
-        talonscript = f'key({menu_key})'
+        talonscript = f"key({menu_key})"
         clip.set_text(talonscript)
         app.notify(
             f"Copied TalonScript: {talonscript}",
@@ -445,7 +447,6 @@ class Actions:
             f"Copied Python: {python}",
             body=f'{" ▸ ".join(menu_path)}\n{strategy}',
         )
-
 
     def menu_select(menu_path: str) -> bool:
         """Selects the menu item at the specified |-delimited path, or returns False if it does not exist"""
