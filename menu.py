@@ -346,7 +346,7 @@ def selected_menu_path_strategy():
 
 def selected_menu_key_path_strategy():
     """Returns Talon-format key equivalent of the menu item that is currently highlighted,
-    , path to it and strategy used to find it"""
+    path to it and strategy used to find it"""
     selected_menu, menu_path, strategy = selected_menu_path_strategy()
 
     if (not selected_menu) or selected_menu.AXRole != "AXMenuItem":
