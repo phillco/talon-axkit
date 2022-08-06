@@ -115,6 +115,9 @@ class Actions:
 
     def dictation_peek_left(clobber=False):
         try:
+            if not setting_accessibility_dictation.get():
+                return actions.next()
+
             el = actions.user.dictation_current_element()
             context = actions.user.accessibility_create_dictation_context(el)
             if context is None:
@@ -135,6 +138,9 @@ class Actions:
 
     def dictation_peek_right():
         try:
+            if not setting_accessibility_dictation.get():
+                return actions.next()
+
             el = actions.user.dictation_current_element()
             context = actions.user.accessibility_create_dictation_context(el)
             if context is None:
