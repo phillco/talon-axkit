@@ -278,7 +278,7 @@ def active_menu_bar():
     return ui.active_app().children.find_one(AXRole="AXMenuBar", max_depth=0)
 
 
-def selected_menu_and_path():
+def selected_menu_and_path() -> (Element, str):
     """Returns selected element in menu bar, and path to it"""
     selected_menu = active_menu_bar()
     menu_path = []
