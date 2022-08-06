@@ -426,7 +426,6 @@ class Actions:
 
     def copy_menu_key():
         """Copies TalonScript to press the key equivalent of the menu item that is currently highlighted"""
-
         menu_key, menu_path, strategy = selected_menu_key_path_strategy()
 
         talonscript = f"key({menu_key})"
@@ -438,7 +437,6 @@ class Actions:
 
     def copy_menu_key_python():
         """Copies Python to press the key equivalent of the menu item that is currently highlighted"""
-
         menu_key, menu_path, strategy = selected_menu_key_path_strategy()
 
         python = f'actions.key("{menu_key}")'
