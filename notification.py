@@ -291,6 +291,8 @@ class NotificationMonitor:
 
             frame = group.AXFrame
             break
+        else:
+            return
 
         gui_actions.x = frame.left - 300
         gui_actions.y = frame.top
