@@ -344,43 +344,36 @@ def selected_menu_path_strategy():
     return selected_menu, selected_menu_path, "Found selected"
 
 
-def selected_menu_key_path_strategy():
-    """Returns Talon-format key equivalent of the menu item that is currently highlighted,
-    path to it and strategy used to find it"""
-    selected_menu, menu_path, strategy = selected_menu_path_strategy()
+def menu_item_talon_key(menu_item):
+    """Returns a Talon key string for an AXMenuItem"""
+    key_char = menu_item.get("AXMenuItemCmdChar")
+    modifiers = menu_item.get("AXMenuItemCmdModifiers")
+    glyph = menu_item.get("AXMenuItemCmdGlyph")
+    virtual_key = menu_item.get("AXMenuItemCmdVirtualKey")
 
-    if (not selected_menu) or selected_menu.AXRole != "AXMenuItem":
-        app.notify("No menu bar item selected or under the mouse pointer")
-        return None, None, None
-
-    key_char = selected_menu.get("AXMenuItemCmdChar")
-    modifiers = selected_menu.get("AXMenuItemCmdModifiers")
-    glyph = selected_menu.get("AXMenuItemCmdGlyph")
-    virtual_key = selected_menu.get("AXMenuItemCmdVirtualKey")
-
-    menu_keys = []
+    keys = []
 
     if modifiers is not None:
         if not (modifiers & kMenuNoCommandModifier):
-            menu_keys.append("cmd")
+            keys.append("cmd")
         if modifiers & kMenuShiftModifier:
-            menu_keys.append("shift")
+            keys.append("shift")
         if modifiers & kMenuOptionModifier:
-            menu_keys.append("alt")
+            keys.append("alt")
         if modifiers & kMenuControlModifier:
-            menu_keys.append("ctrl")
+            keys.append("ctrl")
         if modifiers & kMenuFnGlobeModifier:
-            menu_keys.append("fn")
+            keys.append("fn")
 
     got_key = False
 
     if key_char is not None:
-        menu_keys.append(key_char.lower())
+        keys.append(key_char.lower())
         got_key = True
 
     if not got_key and virtual_key is not None:
         if key_name := VK_NAMES.get(virtual_key):
-            menu_keys.append(key_name)
+            keys.append(key_name)
             got_key = True
 
     # XXX(nriley) consider accounting for glyphs in some cases
@@ -395,13 +388,28 @@ def selected_menu_key_path_strategy():
             no_key_message.append(f"glyph {glyph:X}")
         if no_key_message:
             print("Unsupported key with", ", ".join(no_key_message))
-            print(selected_menu.dump())
+            print(menu_item.dump())
             app.notify("Key not supported", "\n".join(no_key_message))
         else:
             app.notify("Key not found")
+        return None
+
+    return "-".join(keys)
+
+
+def selected_menu_key_path_strategy():
+    """Returns Talon-format key equivalent of the menu item that is currently highlighted,
+    path to it and strategy used to find it"""
+    selected_menu, menu_path, strategy = selected_menu_path_strategy()
+
+    if (not selected_menu) or selected_menu.AXRole != "AXMenuItem":
+        app.notify("No menu bar item selected or under the mouse pointer")
         return None, None, None
 
-    return "-".join(menu_keys), menu_path, strategy
+    if (talon_key := menu_item_talon_key(selected_menu)) is None:
+        return None, None, None
+
+    return talon_key, menu_path, strategy
 
 
 @mod.action_class
@@ -428,6 +436,9 @@ class Actions:
         """Copies TalonScript to press the key equivalent of the menu item that is currently highlighted"""
         menu_key, menu_path, strategy = selected_menu_key_path_strategy()
 
+        if menu_key is None:
+            return
+
         talonscript = f"key({menu_key})"
         clip.set_text(talonscript)
         app.notify(
@@ -438,6 +449,9 @@ class Actions:
     def copy_menu_key_python():
         """Copies Python to press the key equivalent of the menu item that is currently highlighted"""
         menu_key, menu_path, strategy = selected_menu_key_path_strategy()
+
+        if menu_key is None:
+            return
 
         python = f'actions.key("{menu_key}")'
         clip.set_text(python)
