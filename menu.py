@@ -274,7 +274,7 @@ VK_NAMES = {
 }
 
 
-def active_menu_bar()  -> Element:
+def active_menu_bar() -> Element:
     return ui.active_app().children.find_one(AXRole="AXMenuBar", max_depth=0)
 
 
