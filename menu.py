@@ -402,7 +402,7 @@ def selected_menu_key_path_strategy():
     path to it and strategy used to find it"""
     selected_menu, menu_path, strategy = selected_menu_path_strategy()
 
-    if (not selected_menu) or selected_menu.AXRole != "AXMenuItem":
+    if selected_menu is None or selected_menu.AXRole != "AXMenuItem":
         app.notify("No menu bar item selected or under the mouse pointer")
         return None, None, None
 
