@@ -290,7 +290,7 @@ def selected_menu_and_path():
         if not (title := selected_menu.get("AXTitle")):
             return selected_menu, menu_path
 
-        menu_path.append(selected_menu.AXTitle)
+        menu_path.append(title)
         # XXX(nriley) this is True even if list empty - report Talon bug? children also doesn't support len()
         # print(selected_menu.children, bool(selected_menu.children))
         try:
