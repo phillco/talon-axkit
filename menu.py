@@ -318,8 +318,8 @@ def mouse_pos_menu_and_path():
             elif menu.AXRole == "AXMenuBar":
                 menu_path.reverse()
                 break
-        else:  # not in menu bar
-            return None, []
+            else:  # not in menu bar
+                return None, []
 
     return element_at_mouse_pos, menu_path
 
