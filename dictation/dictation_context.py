@@ -113,7 +113,7 @@ class Colors(Enum):
 class Actions:
     """Wires this into the knausj dictation formatter"""
 
-    def dictation_peek_left(clobber=False):
+    def dictation_peek_left():
         try:
             if not setting_accessibility_dictation.get():
                 return actions.next()
