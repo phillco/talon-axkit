@@ -1,7 +1,7 @@
 minimum_pre_commit_version: "2.9.0"
 repos:
   - repo: https://github.com/Zac-HD/shed
-    rev: 0.10.1
+    rev: 0.10.3
     hooks:
       - id: shed
         # TODO(pcohen): bump to --py310-plus when Talon moves to Python 3.10.
