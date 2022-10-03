@@ -24,14 +24,14 @@ repos:
     hooks:
       - id: flynt
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.3.0
+    rev: v1.3.1
     hooks:
       - id: remove-tabs
         types: [file]
         files: \.talon$
         args: ["--whitespaces-count=4"]
   - repo: https://github.com/wenkokke/talonfmt
-    rev: 1.8.0
+    rev: 1.7.4
     hooks:
       - id: talonfmt
         args: ["--in-place", "--max-line-width=100"]
