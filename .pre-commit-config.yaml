@@ -1,7 +1,7 @@
 minimum_pre_commit_version: "2.9.0"
 repos:
   - repo: https://github.com/Zac-HD/shed
-    rev: 0.10.3
+    rev: 0.10.5
     hooks:
       - id: shed
         # TODO(pcohen): bump to --py310-plus when Talon moves to Python 3.10.
@@ -15,7 +15,7 @@ repos:
       - id: mixed-line-ending
       - id: check-merge-conflict
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: "v3.0.0-alpha.0"
+    rev: "v3.0.0-alpha.2"
     hooks:
       - id: prettier
         files: ".*.(md|json|yaml)$"
@@ -24,14 +24,14 @@ repos:
     hooks:
       - id: flynt
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.3.0
+    rev: v1.3.1
     hooks:
       - id: remove-tabs
         types: [file]
         files: \.talon$
         args: ["--whitespaces-count=4"]
   - repo: https://github.com/wenkokke/talonfmt
-    rev: 1.8.0
+    rev: 1.8.1
     hooks:
       - id: talonfmt
         args: ["--in-place", "--max-line-width=88"]
