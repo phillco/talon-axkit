@@ -115,7 +115,7 @@ class Actions:
 
     def dictation_peek(left, right):
         before, after = None, None
-    
+
         try:
             if not setting_accessibility_dictation.get():
                 return actions.next()
@@ -128,8 +128,10 @@ class Actions:
                 )
                 return actions.next()
 
-            if left: before = context.left_context()
-            if right: after = context.right_context()
+            if left:
+                before = context.left_context()
+            if right:
+                after = context.right_context()
         except Exception as e:
             print(
                 f"{Colors.RED.value}{type(e).__name__} while querying accessibility for context-aware dictation:{Colors.RESET.value} '{e}':"
@@ -140,5 +142,3 @@ class Actions:
             return actions.next()
 
         return before, after
-
-
