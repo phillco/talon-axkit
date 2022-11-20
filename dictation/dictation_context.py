@@ -113,7 +113,9 @@ class Colors(Enum):
 class Actions:
     """Wires this into the knausj dictation formatter"""
 
-    def dictation_peek_left():
+    def dictation_peek(left, right):
+        before, after = None, None
+    
         try:
             if not setting_accessibility_dictation.get():
                 return actions.next()
@@ -126,7 +128,8 @@ class Actions:
                 )
                 return actions.next()
 
-            return context.left_context()
+            if left: before = context.left_context()
+            if right: after = context.right_context()
         except Exception as e:
             print(
                 f"{Colors.RED.value}{type(e).__name__} while querying accessibility for context-aware dictation:{Colors.RESET.value} '{e}':"
@@ -136,25 +139,6 @@ class Actions:
             # Fallback to the original (keystrokes) knausj method.
             return actions.next()
 
-    def dictation_peek_right():
-        try:
-            if not setting_accessibility_dictation.get():
-                return actions.next()
+        return before, after
 
-            el = actions.user.dictation_current_element()
-            context = actions.user.accessibility_create_dictation_context(el)
-            if context is None:
-                print(
-                    f"{Colors.YELLOW.value}Accessibility not available for context-aware dictation{Colors.RESET.value}; falling back to cursor method"
-                )
-                return actions.next()
 
-            return context.right_context()
-        except Exception as e:
-            print(
-                f"{Colors.RED.value}{type(e).__name__} while querying accessibility for context-aware dictation:{Colors.RESET.value} '{e}':"
-            )
-            traceback.print_exc()
-
-            # Fallback to the original (keystrokes) knausj method.
-            return actions.next()
