@@ -126,7 +126,7 @@ class Actions:
                 print(
                     f"{Colors.YELLOW.value}Accessibility not available for context-aware dictation{Colors.RESET.value}; falling back to cursor method"
                 )
-                return actions.next()
+                return actions.next(left, right)
 
             if left:
                 before = context.left_context()
@@ -139,6 +139,6 @@ class Actions:
             traceback.print_exc()
 
             # Fallback to the original (keystrokes) knausj method.
-            return actions.next()
+            return actions.next(left, right)
 
         return before, after
