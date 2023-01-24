@@ -47,7 +47,7 @@ For accessibility dictation to work, you need to set
     user.accessibility_dictation = 1
 ```
 
-either globally in `knausj_talon/settings.talon` or else in per-application Talon configuration files. Note that accessibility dictation only operates in some applications; try it in TextEdit to know for sure how it looks in action.  For web applications, generally Safari is better than Chrome is better than Firefox when it comes to accessibility support but there are some exceptions.
+either globally in `knausj_talon/settings.talon` or else in per-application Talon configuration files. Note that accessibility dictation only operates in some applications; try it in TextEdit to know for sure how it looks in action. For web applications, generally Safari is better than Chrome is better than Firefox when it comes to accessibility support but there are some exceptions.
 
 ## Help wanted
 
