@@ -1,7 +1,7 @@
 minimum_pre_commit_version: "2.9.0"
 repos:
   - repo: https://github.com/Zac-HD/shed
-    rev: 0.10.8
+    rev: 0.10.9
     hooks:
       - id: shed
         # TODO(pcohen): bump to --py310-plus when Talon moves to Python 3.10.
@@ -31,7 +31,7 @@ repos:
         files: \.talon$
         args: ["--whitespaces-count=4"]
   - repo: https://github.com/wenkokke/talonfmt
-    rev: 1.8.1
+    rev: 1.9.0
     hooks:
       - id: talonfmt
         args: ["--in-place", "--max-line-width=88"]
