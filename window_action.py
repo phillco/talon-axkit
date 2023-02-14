@@ -22,7 +22,6 @@ property_mapping = {
 
 @mod.action_class
 class Actions:
-
     # TODO(pcohen): this could use a better name
     # "actions" here refers to what you can do with the traffic light icons
     # (close, minimize, zoom/full screen)
