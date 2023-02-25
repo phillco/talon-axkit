@@ -203,7 +203,6 @@ class NotificationMonitor:
         self.update_notifications()
 
     def win_open(self, window):
-
         if not window.app.pid == self.pid:
             return
 
