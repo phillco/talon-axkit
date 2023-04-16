@@ -118,7 +118,7 @@ class Actions:
 
         try:
             if not setting_accessibility_dictation.get():
-                return actions.next()
+                return actions.next(left, right)
 
             el = actions.user.dictation_current_element()
             context = actions.user.accessibility_create_dictation_context(el)
