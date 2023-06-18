@@ -48,6 +48,19 @@ class Actions:
         `on_current`: whether to affect the current window
         `on_others`: whether to affect the non-current window
         """
+        if on_current and on_others:
+            try:
+                # NOTE(pcohen): using appscript is faster than accessibility
+                # and more reliable for things like finder windows.
+                # TODO(pcohen): investigate this for "current" and "others" as well
+                as_ = app.appscript()
+                as_.windows.close(timeout=10)
+                return
+            except Exception as e:
+                print(
+                    f"Error closing windows for app {app.name} using appscript: {type(e)} {e}; falling back to accessibility"
+                )
+
         for window in app.windows():
             if window == app.active_window and not on_current:
                 continue
