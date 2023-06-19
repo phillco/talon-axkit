@@ -73,8 +73,7 @@ class Actions:
         `on_current`: whether to affect the current window
         `on_others`: whether to affect the non-current window
         """
-        # NOTE(pcohen): using appscript is faster than accessibility and more reliable
-        # for things like Finder windows, for applications that support it.
+        # Using appscript is faster than accessibility and more reliable for applications that support it.
         if on_current and on_others and action == "close":
             if close_windows_via_appscript(app):
                 return
