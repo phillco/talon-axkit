@@ -30,7 +30,7 @@ def close_windows_via_appscript(app: App) -> bool:
     try:
         windows = app.appscript().windows
     except AttributeError:
-        # Application doesn't expose a scripting interface.
+        # Application doesn't expose a scripting interface, or `windows`.
         return False
 
     try:
