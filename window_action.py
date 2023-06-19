@@ -21,6 +21,7 @@ property_mapping = {
     "fullscreen": "AXFullScreenButton",
 }
 
+
 def close_windows_via_appscript(app: App) -> bool:
     """Closes all windows for the given application using appscript.
     This is faster/more reliable than accessibility for applications that support scripting.
