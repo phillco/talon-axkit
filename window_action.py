@@ -1,3 +1,5 @@
+import logging
+
 from talon import Context, Module, actions, app, ui
 
 if app.platform == "mac":
@@ -18,6 +20,28 @@ property_mapping = {
     # so you can only go one way for now
     "fullscreen": "AXFullScreenButton",
 }
+
+def close_windows_via_appscript(app: App) -> bool:
+    """Closes all windows for the given application using appscript.
+    This is faster/more reliable than accessibility for applications that support scripting.
+
+    Returns whether successful."""
+    try:
+        windows = app.appscript().windows
+    except AttributeError:
+        # Application doesn't expose a scripting interface.
+        return False
+
+    try:
+        # TODO(pcohen): investigate this for "current" and "others" as well,
+        # as well as other window actions.
+        windows.close(timeout=0.3)
+        return True
+    except Exception as e:
+        logging.debug(
+            f"Error closing windows for app {app.name} using appscript: {type(e)} {e}; falling back to accessibility"
+        )
+        return False
 
 
 @mod.action_class
@@ -48,18 +72,11 @@ class Actions:
         `on_current`: whether to affect the current window
         `on_others`: whether to affect the non-current window
         """
-        if on_current and on_others:
-            try:
-                # NOTE(pcohen): using appscript is faster than accessibility
-                # and more reliable for things like finder windows.
-                # TODO(pcohen): investigate this for "current" and "others" as well
-                as_ = app.appscript()
-                as_.windows.close(timeout=3)
+        # NOTE(pcohen): using appscript is faster than accessibility and more reliable
+        # for things like Finder windows, for applications that support it.
+        if on_current and on_others and action == "close":
+            if close_windows_via_appscript(app):
                 return
-            except Exception as e:
-                print(
-                    f"Error closing windows for app {app.name} using appscript: {type(e)} {e}; falling back to accessibility"
-                )
 
         for window in app.windows():
             if window == app.active_window and not on_current:
