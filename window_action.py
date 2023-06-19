@@ -54,7 +54,7 @@ class Actions:
                 # and more reliable for things like finder windows.
                 # TODO(pcohen): investigate this for "current" and "others" as well
                 as_ = app.appscript()
-                as_.windows.close(timeout=10)
+                as_.windows.close(timeout=3)
                 return
             except Exception as e:
                 print(
