@@ -1,12 +1,12 @@
 os: mac
 -
 
-# Targeting the windows of the current application:
+# Targeting the windows of the current application (e.g. "window close other", "window minimize"):
 window {user.window_actions}: user.action_windows(user.window_actions, 1, 0)
 window {user.window_actions} other: user.action_windows(user.window_actions, 0, 1)
 window {user.window_actions} all: user.action_windows(user.window_actions, 1, 1)
 
-# Targeting the windows of any arbitrary application:
+# Targeting the windows of any arbitrary application (e.g. "Finder window close all"):
 <user.running_applications> window {user.window_actions}:
     user.action_windows(user.window_actions, 1, 0, user.running_applications)
 <user.running_applications> window {user.window_actions} other:
