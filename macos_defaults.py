@@ -79,14 +79,16 @@ class Actions:
 
     def selected_text() -> str:
         try:
-            return ui.focused_element().AXSelectedText
-        except Exception:
-            try:
-                # ui.focused_element() sometimes returns NoElement.
-                # https://github.com/talonvoice/talon/issues/480
+            selected_text = ui.focused_element().AXSelectedText
+            if not selected_text:
+                # Some partially-accessible applications incorrectly report empty selections sometimes, and this can be
+                # quite bad depending on the use case. For maximum safety we have to fall back to the clipboard
+                # implementation in this case. This could be customized if we knew the application was fully
+                # trustworthy.
                 #
-                # TODO(pcohen): extract this focused_element() -> AXFocusedUIElement fallback
-                # if we expect to need it in the future.
-                return ui.active_app().element.AXFocusedUIElement.AXSelectedText
-            except Exception:
+                # See https://github.com/phillco/talon-axkit/issues/59
                 return actions.next()
+
+            return selected_text
+        except Exception:
+            return actions.next()
