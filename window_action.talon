@@ -17,6 +17,7 @@ from <user.running_applications> window {user.window_actions} all:
 # Entering and exiting fullscreen mode.
 fullscreen enter: user.action_windows("fullscreen", 1, 0)
 <user.running_applications> fullscreen enter:
+    user.switcher_focus(user.running_applications)
     user.action_windows("fullscreen", 1, 0, user.running_applications)
 fullscreen exit: key(cmd-ctrl-f)
 
