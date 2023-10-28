@@ -68,7 +68,7 @@ class Actions:
     def action_windows_app(
         app: App, action: str = "close", on_current: bool = True, on_others: bool = True
     ):
-        """Actions windows for the given application
+        """Performs actions on window(s) of the given application
 
         `on_current`: whether to affect the current window
         `on_others`: whether to affect the non-current window
@@ -78,14 +78,20 @@ class Actions:
             if close_windows_via_appscript(app):
                 return
 
+        current_window = app.active_window
+
+        if on_current and not on_others:
+            actions.user.action_window(current_window, action)
+            return
+
         for window in app.windows():
-            if window == app.active_window and not on_current:
+            if window == current_window and not on_current:
                 continue
 
-            if window != app.active_window and not on_others:
+            if window != current_window and not on_others:
                 continue
 
-            # NOTE(pcohen): I used to have a cron() here but it doesn't seem to speed it up
+            # NOTE(pcohen): I used to have a cron() here but it doesn't seem to it up
             # (at least not with any single application)
             actions.user.action_window(window, action)
 
