@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from talon import Context, Module, actions, ui
+from talon import Context, Module, actions, settings, ui
 
 try:
     from talon.ui import Element
@@ -15,7 +15,7 @@ ctx = Context()
 ctx.matches = "os: mac"
 
 mod = Module()
-setting_accessibility_dictation = mod.setting(
+mod.setting(
     "accessibility_dictation",
     type=bool,
     default=False,
@@ -50,7 +50,7 @@ class ModActions:
     def accessibility_dictation_enabled() -> bool:
         """Returns whether accessibility dictation should be used"""
         # NB: for access within other files, since they can't import `setting_accessibility_dictation`
-        return setting_accessibility_dictation.get()
+        return settings.get("user.accessibility_dictation")
 
     def dictation_current_element() -> Element:
         """Returns the accessibility element that should be used for dictation (i.e. the current input textbox).
@@ -117,7 +117,7 @@ class Actions:
         before, after = None, None
 
         try:
-            if not setting_accessibility_dictation.get():
+            if not settings.get("user.accessibility_dictation"):
                 return actions.next(left, right)
 
             el = actions.user.dictation_current_element()
