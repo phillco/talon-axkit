@@ -1,7 +1,7 @@
 import time
 import traceback
 
-from talon import Module, actions, cron, noise, ui
+from talon import Module, actions, cron, noise, settings, ui
 
 try:
     from talon.ui import Element
@@ -11,13 +11,13 @@ except ImportError:
 HISS_DEBUG_ENABLED = True
 
 mod = Module()
-setting_enabled = mod.setting(
+mod.setting(
     "hiss_to_debug_accessibility",
     type=bool,
     default=False,
     desc="Use a hissing sound to print accessibility debugging information to the Talon log.",
 )
-setting_threshold = mod.setting(
+mod.setting(
     "hiss_to_debug_accessibility_threshold",
     type=float,
     default=0.35,
@@ -59,7 +59,9 @@ def hiss_over_threshold():
     if not active_hiss.get("start"):
         return False
 
-    return time.time() - active_hiss["start"] > setting_threshold.get()
+    return time.time() - active_hiss["start"] > settings.get(
+        "user.hiss_to_debug_accessibility_threshold"
+    )
 
 
 def stop_hiss():
@@ -86,7 +88,7 @@ def start_hiss():
 
 
 def on_hiss(noise_active: bool):
-    if not setting_enabled.get():
+    if not settings.get("user.hiss_to_debug_accessibility"):
         return
 
     if noise_active:

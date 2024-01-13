@@ -1,7 +1,7 @@
 import os
 from urllib.parse import unquote, urlparse
 
-from talon import Context, Module, actions, app, ui
+from talon import Context, Module, actions, app, settings, ui
 from talon.mac import applescript
 
 mod = Module()
@@ -11,7 +11,7 @@ os: mac
 """
 
 # TODO(pcohen): support application names
-setting_terminal = mod.setting(
+mod.setting(
     "preferred_terminal",
     type=str,
     default="com.apple.Terminal",
@@ -65,7 +65,7 @@ class user_actions:
         escaped_path = path.replace(r'"', r"\"")
         applescript.run(
             rf"""
-            tell application id "{setting_terminal.get()}"
+            tell application id "{settings.get('user.preferred_terminal')}"
                 activate
                 open "{escaped_path}"
             end tell

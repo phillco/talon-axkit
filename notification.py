@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from itertools import chain
 from typing import Optional
 
-from talon import Context, Module, actions, app, cron, imgui, ui
+from talon import Context, Module, actions, app, cron, imgui, settings, ui
 
 # XXX(nriley) actions are being returned out of order; that's a problem if we want to pop up a menu
 
@@ -11,7 +11,7 @@ mod = Module()
 mod.list("notification_actions", desc="Notification actions")
 mod.list("notification_apps", desc="Notification apps")
 
-notification_debug = mod.setting(
+mod.setting(
     "notification_debug",
     type=bool,
     default=False,
@@ -25,7 +25,7 @@ try:
 
     def debug_print(obj: any, *args):
         """Pretty prints the object"""
-        if not notification_debug.get():
+        if not settings.get("user.notification_debug"):
             return
         if args:
             console.out(obj, *args)
@@ -35,7 +35,7 @@ try:
 except ImportError:
 
     def debug_print(obj: any, *args):
-        if not notification_debug.get():
+        if not settings.get("user.notification_debug"):
             return
         print(obj, *args)
 
