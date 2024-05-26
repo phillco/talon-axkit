@@ -45,7 +45,7 @@ class UserActions:
         pos = ctrl.mouse_pos()
         element = ui.element_at(*pos)
 
-        print(f"Element hierarchy at {pos}:")
+        print(element_context(element, pos, "hierarchy"))
         actions.user.element_print_hierarchy(
             element, all_attributes, complex_attributes
         )
@@ -65,7 +65,7 @@ class UserActions:
         pos = ctrl.mouse_pos()
         element = ui.element_at(*pos)
 
-        print(f"Element tree at {pos}:")
+        print(element_context(element, pos, "tree"))
         actions.user.element_print_tree(element, all_attributes, complex_attributes)
 
     def element_print_tree(element, all_attributes, complex_attributes):
@@ -100,8 +100,19 @@ class UserActions:
 
     def element_print(element, all_attributes, complex_attributes):
         print(
-            format_attributes(element_dict(element, all_attributes, complex_attributes))
+            element_context(element),
+            format_attributes(
+                element_dict(element, all_attributes, complex_attributes)
+            ),
         )
+
+
+def element_context(element, pos=None, display=None):
+    return f"""Element{
+        f' {display}' if display else ""
+    }{
+        f' at {tuple(map(round, pos))}' if pos else ""
+    } in app bundle={element.window.app.bundle!r}:"""
 
 
 def format_attributes(d, prefix=""):
