@@ -90,6 +90,10 @@ class ModActions:
         if selection is None:
             selection = Span(0, 0)
 
+        # Find the portion of the range represented by AXValue, if any (e.g., current page of document)
+        if shared_range := el.get("AXSharedCharacterRange"):
+            selection = Span(selection.a - shared_range.a, selection.b - shared_range.a)
+
         context = AccessibilityContext(content=el.get("AXValue"), selection=selection)
 
         # Support application-specific overrides:
