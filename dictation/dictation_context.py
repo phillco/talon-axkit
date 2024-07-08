@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from talon import Context, Module, actions, ui
+from talon import Context, Module, actions, settings, ui
 
 try:
     from talon.ui import Element
@@ -15,7 +15,7 @@ ctx = Context()
 ctx.matches = "os: mac"
 
 mod = Module()
-setting_accessibility_dictation = mod.setting(
+mod.setting(
     "accessibility_dictation",
     type=bool,
     default=False,
@@ -50,7 +50,7 @@ class ModActions:
     def accessibility_dictation_enabled() -> bool:
         """Returns whether accessibility dictation should be used"""
         # NB: for access within other files, since they can't import `setting_accessibility_dictation`
-        return setting_accessibility_dictation.get()
+        return settings.get("user.accessibility_dictation")
 
     def dictation_current_element() -> Element:
         """Returns the accessibility element that should be used for dictation (i.e. the current input textbox).
@@ -90,6 +90,10 @@ class ModActions:
         if selection is None:
             selection = Span(0, 0)
 
+        # Find the portion of the range represented by AXValue, if any (e.g., current page of document)
+        if shared_range := el.get("AXSharedCharacterRange"):
+            selection = Span(selection.a - shared_range.a, selection.b - shared_range.a)
+
         context = AccessibilityContext(content=el.get("AXValue"), selection=selection)
 
         # Support application-specific overrides:
@@ -113,17 +117,25 @@ class Colors(Enum):
 class Actions:
     """Wires this into the knausj dictation formatter"""
 
-    def dictation_peek_left():
+    def dictation_peek(left, right):
+        before, after = None, None
+
         try:
+            if not settings.get("user.accessibility_dictation"):
+                return actions.next(left, right)
+
             el = actions.user.dictation_current_element()
             context = actions.user.accessibility_create_dictation_context(el)
             if context is None:
                 print(
                     f"{Colors.YELLOW.value}Accessibility not available for context-aware dictation{Colors.RESET.value}; falling back to cursor method"
                 )
-                return actions.next()
+                return actions.next(left, right)
 
-            return context.left_context()
+            if left:
+                before = context.left_context()
+            if right:
+                after = context.right_context()
         except Exception as e:
             print(
                 f"{Colors.RED.value}{type(e).__name__} while querying accessibility for context-aware dictation:{Colors.RESET.value} '{e}':"
@@ -131,24 +143,6 @@ class Actions:
             traceback.print_exc()
 
             # Fallback to the original (keystrokes) knausj method.
-            return actions.next()
+            return actions.next(left, right)
 
-    def dictation_peek_right():
-        try:
-            el = actions.user.dictation_current_element()
-            context = actions.user.accessibility_create_dictation_context(el)
-            if context is None:
-                print(
-                    f"{Colors.YELLOW.value}Accessibility not available for context-aware dictation{Colors.RESET.value}; falling back to cursor method"
-                )
-                return actions.next()
-
-            return context.right_context()
-        except Exception as e:
-            print(
-                f"{Colors.RED.value}{type(e).__name__} while querying accessibility for context-aware dictation:{Colors.RESET.value} '{e}':"
-            )
-            traceback.print_exc()
-
-            # Fallback to the original (keystrokes) knausj method.
-            return actions.next()
+        return before, after

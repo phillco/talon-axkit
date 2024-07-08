@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from itertools import chain
 from typing import Optional
 
-from talon import Context, Module, actions, app, cron, ui
+from talon import Context, Module, actions, app, cron, imgui, settings, ui
 
 # XXX(nriley) actions are being returned out of order; that's a problem if we want to pop up a menu
 
@@ -11,7 +11,7 @@ mod = Module()
 mod.list("notification_actions", desc="Notification actions")
 mod.list("notification_apps", desc="Notification apps")
 
-notification_debug = mod.setting(
+mod.setting(
     "notification_debug",
     type=bool,
     default=False,
@@ -25,7 +25,7 @@ try:
 
     def debug_print(obj: any, *args):
         """Pretty prints the object"""
-        if not notification_debug.get():
+        if not settings.get("user.notification_debug"):
             return
         if args:
             console.out(obj, *args)
@@ -35,7 +35,7 @@ try:
 except ImportError:
 
     def debug_print(obj: any, *args):
-        if not notification_debug.get():
+        if not settings.get("user.notification_debug"):
             return
         print(obj, *args)
 
@@ -49,6 +49,9 @@ class Actions:
     def notification_app_action(app_name: str, action: str) -> bool:
         """Perform the specified action on the first notification (stack) for the specified app"""
         return False
+
+    def notification_show_actions(index: int):
+        """Display actions available on the notification at the specified index, or hide list if index is -1"""
 
     def notifications_update():
         """Update notification list to reflect what is currently onscreen"""
@@ -81,6 +84,7 @@ class Notification:
 
     @staticmethod
     def from_group(group, identifier):
+        # XXX(nriley) better handle AXNotificationCenterBannerStack
         group_actions = group.actions
         if "AXScrollToVisible" in group_actions:
             del group_actions["AXScrollToVisible"]  # not useful
@@ -152,6 +156,9 @@ class UserActions:
     def notification_app_action(app_name: str, action: str) -> bool:
         return MONITOR.perform_action(action, app_name=app_name)
 
+    def notification_show_actions(index: int):
+        MONITOR.show_actions(index)
+
     def notifications_update():
         MONITOR.update_notifications()
 
@@ -163,6 +170,20 @@ class UserActions:
             AXIdentifier="com.apple.menuextra.clock",
             max_depth=0,
         ).perform("AXPress")
+
+
+@imgui.open()
+def gui_actions(gui: imgui.GUI):
+    global notification_actions
+
+    gui.text("Notification actions")
+    gui.text("Say “note <notification number> <action>”")
+    gui.line()
+    for notification in notification_actions:
+        gui.text(notification)
+    gui.spacer()
+    if gui.button("Close (say “note actions”)"):
+        actions.user.notification_show_actions(-1)
 
 
 class NotificationMonitor:
@@ -182,7 +203,6 @@ class NotificationMonitor:
         self.update_notifications()
 
     def win_open(self, window):
-
         if not window.app.pid == self.pid:
             return
 
@@ -198,6 +218,13 @@ class NotificationMonitor:
 
                 yield identifier, group
 
+    def __getitem__(self, index):
+        if index < 0 or index > len(self.notifications) - 1:
+            app.notify(f"Unable to locate notification #{index + 1}", "Try again?")
+            return None
+
+        return self.notifications[index]
+
     def perform_action(
         self, action: str, index: Optional[int] = None, app_name: str = None
     ):
@@ -207,11 +234,9 @@ class NotificationMonitor:
 
         notification = None
         if index is not None:
-            if index < 0 or index > len(self.notifications) - 1:
-                app.notify(f"Unable to locate notification #{index + 1}", "Try again?")
+            if (notification := self[index]) is None:
                 return False
 
-            notification = self.notifications[index]
         elif app_name is not None:
             try:
                 notification = next(
@@ -243,7 +268,39 @@ class NotificationMonitor:
         app.notify("Unable to locate notification", "Try again?")
         return False
 
+    def show_actions(self, index: int):
+        global notification_actions
+
+        if gui_actions.showing:
+            gui_actions.hide()
+
+        if index == -1:
+            return
+
+        self.update_notifications()
+
+        if (notification := self[index]) is None:
+            return
+
+        for identifier, group in self.notification_groups():
+            if identifier != notification.identifier:
+                continue
+
+            notification_actions = set(notification.actions.keys())
+
+            frame = group.AXFrame
+            break
+        else:
+            return
+
+        gui_actions.x = frame.left - 300
+        gui_actions.y = frame.top
+        gui_actions.show()
+
     def update_notifications(self, adding=[]):
+        if gui_actions.showing:
+            gui_actions.hide()
+
         if adding:
             self.notifications += adding
 
@@ -258,9 +315,12 @@ class NotificationMonitor:
             except ValueError:
                 notifications[y] = Notification.from_group(group, identifier)
 
+        # groups may be not be returned in order of increasing y
+        notifications = dict(sorted(notifications.items()))
+
         self.notifications = list(notifications.values())
         if notifications:
-            debug_print(notifications)
+            debug_print("notifications", notifications)
 
         notification_actions = set()
         notification_apps = set()
