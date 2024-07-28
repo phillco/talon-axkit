@@ -211,7 +211,8 @@ class NotificationMonitor:
 
     def notification_groups(self):
         ncui = ui.apps(pid=self.pid)[0]
-        for window in ncui.windows():
+        # XXX(nriley) Would use ncui.windows() but sometimes Talon loses track of them
+        for window in ncui.element.children.find(AXRole="AXWindow", max_depth=0):
             for group in window.children.find(AXRole="AXGroup"):
                 if not (identifier := Notification.group_identifier(group)):
                     continue
