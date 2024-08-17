@@ -38,6 +38,13 @@ class Actions:
     ):
         """Print information about the element"""
 
+    def focused_element_safe() -> ui.Element:
+        """Returns the current element or None if there isn't one"""
+        try:
+            return ui.focused_element()
+        except (RuntimeError, OSError):
+            return None
+
 
 @ctx.action_class("user")
 class UserActions:

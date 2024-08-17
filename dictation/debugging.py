@@ -1,7 +1,7 @@
 import time
 import traceback
 
-from talon import Module, actions, cron, noise, settings, ui
+from talon import Module, actions, cron, noise, settings
 
 try:
     from talon.ui import Element
@@ -31,7 +31,7 @@ class Actions:
         """Prints information about the currently focused UI element to the terminal, for debugging"""
 
         if not el:
-            el = ui.focused_element()
+            el = actions.user.focused_element_safe()
 
         try:
             # TODO(pcohen): make this work without Rich installed

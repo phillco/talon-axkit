@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from talon import Context, Module, actions, settings, ui
+from talon import Context, Module, actions, settings
 
 try:
     from talon.ui import Element
@@ -58,7 +58,7 @@ class ModActions:
         This is almost always the focused (current) element, however, this action
         exists so that context can overwrite it, for applications with strange behavior.
         """
-        return ui.focused_element()
+        return actions.user.focused_element_safe()
 
     def accessibility_adjust_context_for_application(
         el: Element, context: AccessibilityContext
