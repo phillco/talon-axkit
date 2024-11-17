@@ -110,15 +110,21 @@ class UserActions:
 def element_context(element, pos=None, display=None):
     while True:
         if hasattr(element, "AXWindow"):
-            window = element.window
+            app = element.window.app
             break
-        if element.AXRole == "AXWindow":
-            window = element
-            break
+        match element.AXRole:
+            case "AXWindow":
+                app = element.app
+                break
+            case "AXApplication":
+                apps = ui.apps(name=element.AXTitle)
+                if len(apps) == 1:
+                    app = apps[0]
+                    break
         if hasattr(element, "AXParent"):
             element = element.parent
             continue
-        window = None
+        app = None
         break
 
     return f"""Element{
@@ -126,7 +132,7 @@ def element_context(element, pos=None, display=None):
     }{
         f" at {tuple(map(round, pos))}" if pos else ""
     } in app bundle={
-        f"{window.app.bundle!r}" if window else "<unknown>"
+        f"{app.bundle!r}" if app else "<unknown>"
     }:"""
 
 
