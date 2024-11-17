@@ -350,7 +350,7 @@ class NotificationMonitor:
             notification_actions = {
                 spoken_form.replace(mangled_word, word): action
                 for mangled_word, word in apostrophe_words.items()
-                for spoken_form, action in actions.items()
+                for spoken_form, action in notification_actions.items()
                 if "apostrophe" not in spoken_form
             }
         if "actions" in notification_actions:
