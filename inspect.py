@@ -108,11 +108,26 @@ class UserActions:
 
 
 def element_context(element, pos=None, display=None):
+    while True:
+        if hasattr(element, "AXWindow"):
+            window = element.window
+            break
+        if element.AXRole == "AXWindow":
+            window = element
+            break
+        if hasattr(element, "AXParent"):
+            element = element.parent
+            continue
+        window = None
+        break
+
     return f"""Element{
-        f' {display}' if display else ""
+        f" {display}" if display else ""
     }{
-        f' at {tuple(map(round, pos))}' if pos else ""
-    } in app bundle={element.window.app.bundle!r}:"""
+        f" at {tuple(map(round, pos))}" if pos else ""
+    } in app bundle={
+        f"{window.app.bundle!r}" if window else "<unknown>"
+    }:"""
 
 
 def format_attributes(d, prefix=""):
