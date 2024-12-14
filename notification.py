@@ -80,6 +80,10 @@ class Notification:
 
         if identifier is None:
             return None
+        # For macOS pre-Sequoia.
+        if str.isdigit(identifier):
+            return int(identifier)
+        # For macOS post-Sequoia.
         try:
             return UUID(identifier)
         except ValueError:
@@ -130,7 +134,10 @@ class Notification:
     def notifications_in_window(window):
         notifications = []
 
-        for group in window.children.find(AXRole="AXButton"):
+        # macOS Sequoia uses AXButton, previous versions use AXGroup.
+        for group in list(window.children.find(AXRole="AXGroup")) + list(
+            window.children.find(AXRole="AXButton")
+        ):
             if not (identifier := Notification.group_identifier(group)):
                 continue
 
@@ -215,7 +222,10 @@ class NotificationMonitor:
     def notification_groups(self):
         ncui = ui.apps(pid=self.pid)[0]
         for window in ncui.windows():
-            for group in window.children.find(AXRole="AXButton"):
+            # macOS Sequoia uses AXButton, previous versions use AXGroup.
+            for group in list(window.children.find(AXRole="AXGroup")) + list(
+                window.children.find(AXRole="AXButton")
+            ):
                 if not (identifier := Notification.group_identifier(group)):
                     continue
 
