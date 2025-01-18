@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from itertools import chain
 from typing import Optional
+from uuid import UUID
 
 from talon import Context, Module, actions, app, imgui, settings, speech_system, ui
 
@@ -71,10 +72,16 @@ class Notification:
     def identifier(notification):
         identifier = getattr(notification, "AXIdentifier", None)
 
-        if identifier is None or not str.isdigit(identifier):
+        if identifier is None:
             return None
-
-        return int(identifier)
+        # For macOS pre-Sequoia.
+        if str.isdigit(identifier):
+            return int(identifier)
+        # For macOS post-Sequoia.
+        try:
+            return UUID(identifier)
+        except ValueError:
+            return None
 
     @staticmethod
     def from_button(button, identifier):
@@ -197,9 +204,18 @@ class NotificationMonitor:
         ncui = ui.apps(pid=self.pid)[0]
         for window in ncui.windows():
             try:
-                button_list = window.children.find_one(AXSubrole="AXOpaqueProviderList")
+                # notification parent as of macOS 15.2
+                button_list = window.children.find_one(
+                    AXIdentifier="AXNotificationListItems"
+                )
             except ui.UIErr:
-                continue
+                try:
+                    # notification parent as of macOS 14.7.2
+                    button_list = window.children.find_one(
+                        AXSubrole="AXOpaqueProviderList"
+                    )
+                except ui.UIErr:
+                    continue
 
             for child in button_list.children:
                 if getattr(child, "AXSubrole", None) not in (
