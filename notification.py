@@ -195,33 +195,51 @@ class NotificationMonitor:
 
         self.hide_actions()
 
-    def notification_buttons(self):
+    def identifier_notifications(self):
         ncui = ui.apps(pid=self.pid)[0]
         for window in ncui.children.find(AXRole="AXWindow", max_depth=0):
             try:
-                # notification parent as of macOS 15.2
-                button_list = window.children.find_one(
+                # notification parent as of macOS 15.4.1 (if multiple notifications)
+                notification_parent = window.children.find_one(
                     AXIdentifier="AXNotificationListItems"
                 )
             except ui.UIErr:
                 try:
                     # notification parent as of macOS 14.7.2
-                    button_list = window.children.find_one(
+                    notification_parent = window.children.find_one(
                         AXSubrole="AXOpaqueProviderList"
                     )
                 except ui.UIErr:
-                    continue
+                    try:
+                        # notification parent as of macOS 15.4.1 (if single notification)
+                        notification_parent = window.children.find_one(
+                            AXRole="AXScrollArea"
+                        )
+                    except ui.UIErr:
+                        debug_print("can't find notification parent in", window.dump())
+                        debug_print(
+                            "children found", [c.dump() for c in window.children.find()]
+                        )
+                        continue
 
-            for child in button_list.children:
+            debug_print("window", window.dump())
+            debug_print("notification parent", notification_parent.dump())
+
+            for child in notification_parent.children.find(
+                AXRole="AXGroup", max_depth=0
+            ):
                 if getattr(child, "AXSubrole", None) not in (
                     "AXNotificationCenterAlert",
                     "AXNotificationCenterBanner",
                     "AXNotificationCenterBannerStack",
                 ):
+                    debug_print("skipping nonmatching subrole", child.dump())
                     continue
                 if not (identifier := Notification.identifier(child)):
+                    debug_print("skipping missing identifier", child.dump())
                     continue
 
+                debug_print("notification", identifier, child.dump())
                 yield identifier, child
 
     def __getitem__(self, index):
@@ -254,7 +272,7 @@ class NotificationMonitor:
                 )
                 return False
 
-        for identifier, button in self.notification_buttons():
+        for identifier, button in self.identifier_notifications():
             if identifier != notification.identifier:
                 continue
 
@@ -281,7 +299,7 @@ class NotificationMonitor:
         if (notification := self[index]) is None:
             return
 
-        for identifier, button in self.notification_buttons():
+        for identifier, button in self.identifier_notifications():
             if identifier != notification.identifier:
                 continue
 
@@ -326,7 +344,7 @@ class NotificationMonitor:
         self.hide_actions()
 
         notifications = {}
-        for identifier, button in self.notification_buttons():
+        for identifier, button in self.identifier_notifications():
             y = button.AXPosition.y
             notifications[y] = Notification.from_button(button, identifier)
 
