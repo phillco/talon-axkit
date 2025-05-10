@@ -202,7 +202,7 @@ class NotificationMonitor:
 
     def notification_buttons(self):
         ncui = ui.apps(pid=self.pid)[0]
-        for window in ncui.windows():
+        for window in ncui.children.find(AXRole="AXWindow", max_depth=0):
             try:
                 # notification parent as of macOS 15.2
                 button_list = window.children.find_one(
