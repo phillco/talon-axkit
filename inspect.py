@@ -1,3 +1,4 @@
+from contextlib import suppress
 from reprlib import Repr
 
 from talon import Context, Module, actions, ctrl, ui
@@ -110,12 +111,17 @@ class UserActions:
 def element_context(element, pos=None, display=None):
     while True:
         if hasattr(element, "AXWindow"):
-            app = element.window.app
-            break
+            try:
+                app = element.window.app
+            except ui.UIErr:
+                pass
+            else:
+                break
         match element.AXRole:
             case "AXWindow":
-                app = element.app
-                break
+                with suppress(AttributeError):
+                    app = element.app
+                    break
             case "AXApplication":
                 apps = ui.apps(name=element.AXTitle)
                 if len(apps) == 1:
