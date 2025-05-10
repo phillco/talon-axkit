@@ -85,38 +85,38 @@ class Notification:
             return None
 
     @staticmethod
-    def from_button(button, identifier):
+    def from_group(group, identifier):
         # XXX(nriley) better handle AXNotificationCenterBannerStack
-        button_actions = button.actions
-        if "AXScrollToVisible" in button_actions:
-            del button_actions["AXScrollToVisible"]  # not useful
+        group_actions = group.actions
+        if "AXScrollToVisible" in group_actions:
+            del group_actions["AXScrollToVisible"]  # not useful
         # XXX(nriley) create_spoken_forms_from_list doesn't handle apostrophes correctly
         # https://github.com/talonhub/community/issues/780
-        button_actions = {
+        group_actions = {
             name.lower().replace("’", "'"): action
-            for action, name in button_actions.items()
+            for action, name in group_actions.items()
         }
 
         title = body = subtitle = None
 
         with suppress(ui.UIErr):
-            title = button.children.find_one(AXIdentifier="title").AXValue
+            title = group.children.find_one(AXIdentifier="title").AXValue
 
         with suppress(ui.UIErr):
-            body = button.children.find_one(AXIdentifier="body").AXValue
+            body = group.children.find_one(AXIdentifier="body").AXValue
 
         with suppress(ui.UIErr):
-            subtitle = button.children.find_one(AXIdentifier="subtitle").AXValue
+            subtitle = group.children.find_one(AXIdentifier="subtitle").AXValue
 
         return Notification(
             identifier=identifier,
-            subrole=button.AXSubrole,
-            app_name=button.AXDescription,
-            stacking_identifier=button.AXStackingIdentifier,
+            subrole=group.AXSubrole,
+            app_name=group.AXDescription,
+            stacking_identifier=group.AXStackingIdentifier,
             title=title,
             subtitle=subtitle,
             body=body,
-            actions=button_actions,
+            actions=group_actions,
         )
 
 
@@ -195,7 +195,7 @@ class NotificationMonitor:
 
         self.hide_actions()
 
-    def identifier_notifications(self):
+    def identifier_groups(self):
         ncui = ui.apps(pid=self.pid)[0]
         for window in ncui.children.find(AXRole="AXWindow", max_depth=0):
             try:
@@ -225,22 +225,22 @@ class NotificationMonitor:
             debug_print("window", window.dump())
             debug_print("notification parent", notification_parent.dump())
 
-            for child in notification_parent.children.find(
+            for group in notification_parent.children.find(
                 AXRole="AXGroup", max_depth=0
             ):
-                if getattr(child, "AXSubrole", None) not in (
+                if getattr(group, "AXSubrole", None) not in (
                     "AXNotificationCenterAlert",
                     "AXNotificationCenterBanner",
                     "AXNotificationCenterBannerStack",
                 ):
-                    debug_print("skipping nonmatching subrole", child.dump())
+                    debug_print("skipping nonmatching subrole", group.dump())
                     continue
-                if not (identifier := Notification.identifier(child)):
-                    debug_print("skipping missing identifier", child.dump())
+                if not (identifier := Notification.identifier(group)):
+                    debug_print("skipping missing identifier", group.dump())
                     continue
 
-                debug_print("notification", identifier, child.dump())
-                yield identifier, child
+                debug_print("notification", identifier, group.dump())
+                yield identifier, group
 
     def __getitem__(self, index):
         notifications = self.notifications
@@ -272,7 +272,7 @@ class NotificationMonitor:
                 )
                 return False
 
-        for identifier, button in self.identifier_notifications():
+        for identifier, group in self.identifier_groups():
             if identifier != notification.identifier:
                 continue
 
@@ -284,7 +284,7 @@ class NotificationMonitor:
                     app.notify(f"No such action “{action}”", "Try again?")
                     return False
 
-            button.perform(notification.actions[action])
+            group.perform(notification.actions[action])
             return True
 
         app.notify("Unable to locate notification", "Try again?")
@@ -299,7 +299,7 @@ class NotificationMonitor:
         if (notification := self[index]) is None:
             return
 
-        for identifier, button in self.identifier_notifications():
+        for identifier, group in self.identifier_groups():
             if identifier != notification.identifier:
                 continue
 
@@ -307,7 +307,7 @@ class NotificationMonitor:
             # XXX(nriley) sorting them is better than nothing
             self.actions_for_notification = sorted(notification.actions.keys())
 
-            frame = button.AXFrame
+            frame = group.AXFrame
             break
         else:
             return
@@ -344,9 +344,9 @@ class NotificationMonitor:
         self.hide_actions()
 
         notifications = {}
-        for identifier, button in self.identifier_notifications():
+        for identifier, button in self.identifier_groups():
             y = button.AXPosition.y
-            notifications[y] = Notification.from_button(button, identifier)
+            notifications[y] = Notification.from_group(button, identifier)
 
         # notification buttons may be not be returned in order of increasing y
         notifications = dict(sorted(notifications.items()))
