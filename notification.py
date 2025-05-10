@@ -1,3 +1,4 @@
+from contextlib import suppress
 from dataclasses import dataclass, field
 from itertools import chain
 from typing import Optional
@@ -98,20 +99,14 @@ class Notification:
 
         title = body = subtitle = None
 
-        try:
+        with suppress(ui.UIErr):
             title = button.children.find_one(AXIdentifier="title").AXValue
-        except ui.UIErr:
-            pass
 
-        try:
+        with suppress(ui.UIErr):
             body = button.children.find_one(AXIdentifier="body").AXValue
-        except ui.UIErr:
-            pass
 
-        try:
+        with suppress(ui.UIErr):
             subtitle = button.children.find_one(AXIdentifier="subtitle").AXValue
-        except ui.UIErr:
-            pass
 
         return Notification(
             identifier=identifier,
