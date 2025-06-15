@@ -263,7 +263,7 @@ class NotificationMonitor:
             try:
                 notification = next(
                     notification
-                    for notification in self._notifications
+                    for notification in self.notifications
                     if notification.app_name == app_name
                 )
             except StopIteration:
