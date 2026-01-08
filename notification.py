@@ -67,7 +67,6 @@ class Notification:
     identifier: int
     subrole: str = field(default=None, compare=False)
     app_name: str = field(default=None, compare=False)
-    stacking_identifier: str = field(default=None, compare=False)
     title: str = field(default=None, compare=False)
     subtitle: str = field(default=None, compare=False)
     body: str = field(default=None, compare=False)
@@ -123,7 +122,6 @@ class Notification:
             identifier=identifier,
             subrole=group.AXSubrole,
             app_name=group.AXDescription,
-            stacking_identifier=group.AXStackingIdentifier,
             title=title,
             subtitle=subtitle,
             body=body,
