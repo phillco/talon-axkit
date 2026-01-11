@@ -1,3 +1,4 @@
+from contextlib import suppress
 from reprlib import Repr
 
 from talon import Context, Module, actions, ctrl, ui
@@ -108,11 +109,37 @@ class UserActions:
 
 
 def element_context(element, pos=None, display=None):
+    while True:
+        if hasattr(element, "AXWindow"):
+            try:
+                app = element.window.app
+            except ui.UIErr:
+                pass
+            else:
+                break
+        match element.AXRole:
+            case "AXWindow":
+                with suppress(AttributeError):
+                    app = element.app
+                    break
+            case "AXApplication":
+                apps = ui.apps(name=element.AXTitle)
+                if len(apps) == 1:
+                    app = apps[0]
+                    break
+        if hasattr(element, "AXParent"):
+            element = element.parent
+            continue
+        app = None
+        break
+
     return f"""Element{
-        f' {display}' if display else ""
+        f" {display}" if display else ""
     }{
-        f' at {tuple(map(round, pos))}' if pos else ""
-    } in app bundle={element.window.app.bundle!r}:"""
+        f" at {tuple(map(round, pos))}" if pos else ""
+    } in app bundle={
+        f"{app.bundle!r}" if app else "<unknown>"
+    }:"""
 
 
 def format_attributes(d, prefix=""):
