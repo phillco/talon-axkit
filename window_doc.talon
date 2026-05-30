@@ -1,5 +1,6 @@
 os: mac
 -
+
 document open: user.open_current_doc()
 document open in <user.launch_applications>:
     user.open_current_doc_in_app(user.launch_applications)

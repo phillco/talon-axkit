@@ -63,14 +63,12 @@ class user_actions:
             return
 
         escaped_path = path.replace(r'"', r"\"")
-        applescript.run(
-            rf"""
+        applescript.run(rf"""
             tell application id "{settings.get('user.preferred_terminal')}"
                 activate
                 open "{escaped_path}"
             end tell
-        """
-        )
+        """)
 
 
 @ctx.action_class("edit")
